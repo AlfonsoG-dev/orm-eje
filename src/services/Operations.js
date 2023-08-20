@@ -63,9 +63,18 @@ const operations = {
         for(let i of values){
             t_va.push(`'${i}'`)
         }
-        console.log(date_format)
         return new Promise((resolve, reject) =>{
             this.any_execute(`insert into consulta.users(${keys.toString()}, create_at) values(${t_va.toString()}, ?)`, date_format)
+            .then((res) => resolve(res))
+            .catch((err) => reject(err))
+        })
+    },
+    update: function(obj = {}){
+        const combin = utils.get_find_properties(obj).split(',')
+        const valor = combin.splice(1, combin.length)
+        const date_now = utils.get_date_format()
+        return new Promise((resolve, reject) => {
+            this.any_execute(`update consulta.users set ${valor.toString()}, update_at=? where${combin.toString()}`, date_now)
             .then((res) => resolve(res))
             .catch((err) => reject(err))
         })

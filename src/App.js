@@ -1,9 +1,10 @@
 const operation = require('./services/Operations')
-const nUser = {
-    nombre: 'mio',
-    email: 'mio@gmail',
-    password: 'mio'
+
+const uUser = {
+    id: 5,
+    nombre: 'test_mio',
+    rol: 'test',
 }
-operation.save(nUser)
+operation.update(uUser)
 .then((res) => console.log(res))
 .catch((err) => {throw err})
