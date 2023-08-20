@@ -1,59 +1,65 @@
 //dependencias
-const db_conection = require('../services/DbConection')
 const User = require('../model/DbModel')
 const utils = require('../utils/DbUtils')
 
-//utilidades
-const cursor = db_conection.normal_conection("localhost", "test_user", "5x5W12")
-const trim = utils.get_clean_properties(User)
-
 //operaciones
-const operations = {
-    test_db: function (db_name = ''){
-        const data = cursor.connect()
+class Operaciones {
+    constructor(db_name = '', tb_name = '', connection){
+        if(tb_name === undefined || connection === undefined || db_name === undefined){
+            throw Error("no se puede crear las operaciones")
+        }
+        this.tb_name = tb_name
+        this.db_name = db_name
+        this.cursor = connection
+        this.test_db()
+        this.create_table()
+    }
+    test_db(){
+        const data = this.cursor.connect()
         if(data !== undefined){
             return data
         }else{
-            const data = cursor.execute(`create database if not exists ${db_name}`)
+            const data = this.cursor.execute(`create database if not exists ${this.db_name}`)
             return data
         }
-    },
-    create_table: async function(db_name = ''){
-        const data = await cursor.execute(`create table if not exists ${db_name}.test(${trim})`)
+    }
+    async create_table(){
+        const trim = utils.get_clean_properties(User)
+        const data = await this.cursor.execute(`create table if not exists ${this.tb_name}(${trim})`)
         if(data !== undefined){
-            console.log(data)
+            return data
         }
-    },
-    any_query: function(sql = '', ...args){
+    }
+    any_query(sql = '', ...args){
         return new Promise((resolve, reject) => {
-            cursor.query(sql, args, function(err, res) {
+            this.cursor.query(sql, args, function(err, res) {
                 if(err) reject(err)
                 resolve(res)
             })
         })
-    },
-    any_execute: function(sql = '', ...args){
+    }
+    any_execute(sql = '', ...args){
         return new Promise((resolve, reject) => {
-            cursor.execute(sql, args, function(err, res) {
+            this.cursor.execute(sql, args, function(err, res) {
                 if(err) reject(err)
                 resolve(res)
             })
         })
-    },
-    read: function({options = '', limit = ''}){
+    }
+    read({options = '', limit = ''}){
         if(options === undefined && limit === undefined){
             throw Error("asignar los datos correspondientas para {options} y {limit}")
         }
         if(options !== undefined && limit !== undefined){
             return new Promise((resolve, reject) =>{
-                this.any_execute(`select ${options} from consulta.users limit ${limit}`)
+                this.any_execute(`select ${options} from ${this.tb_name} limit ${limit}`)
                 .then((res) => resolve(res))
                 .catch((err) => reject(err))
             })
         }
         if(options === undefined){
             return new Promise((resolve, reject) =>{
-                this.any_execute(`select * from consulta.users limit ${limit}`)
+                this.any_execute(`select * from ${this.tb_name} limit ${limit}`)
                 .then((res) => resolve(res))
                 .catch((err) => reject(err))
             })
@@ -61,28 +67,29 @@ const operations = {
         }
         if(limit === undefined){
             return new Promise((resolve, reject) =>{
-                this.any_execute(`select ${options} from consulta.users`)
+                this.any_execute(`select ${options} from ${this.tb_name}`)
                 .then((res) => resolve(res))
                 .catch((err) => reject(err))
             })
 
         }
-    },
+    }
     //TODO: por el momento retorna todos los campos del elemento buscado
     //se deberia dar la opción de obtener solo lo necesario
-    find: function({where}){
+    find({where}){
         if(where === undefined){
             throw Error("debe asignar un objeto con la propiedad ¡{where: {condicion}}!")
         }
         const properties = utils.get_find_properties(where)
         const p_clean = utils.get_condicional(properties)
         return new Promise((resolve, reject) =>{
-            this.any_execute(`select * from consulta.users where${p_clean}`)
+            this.any_execute(`select * from ${this.tb_name} where${p_clean}`)
             .then((res) => resolve(res))
             .catch((err) => reject(err))
         })
-    },
-    save: function(obj = {}){
+    }
+
+    save(obj = {}){
         if(obj === undefined){
             throw Error("no se ha asignado ningun objeto para guardar")
         }
@@ -93,13 +100,13 @@ const operations = {
             t_va.push(`'${i}'`)
         }
         return new Promise((resolve, reject) =>{
-            this.any_execute(`insert into consulta.users(${keys.toString()}, create_at) values(${t_va.toString()}, ?)`, date_format)
+            this.any_execute(`insert into ${this.tb_name}(${keys.toString()}, create_at) values(${t_va.toString()}, ?)`, date_format)
             .then((res) => resolve(res))
             .catch((err) => reject(err))
         })
-    },
+    }
     //TODO: por el momento solo actualiza por id en la condición 
-    update: function(obj = {}){
+    update(obj = {}) {
         if(obj === undefined){
             throw Error("no se ha asignado ningun objeto para actualizar")
         }
@@ -107,19 +114,19 @@ const operations = {
         const valor = combin.splice(1, combin.length)
         const date_now = utils.get_date_format()
         return new Promise((resolve, reject) => {
-            this.any_execute(`update consulta.users set ${valor.toString()}, update_at=? where${combin.toString()}`, date_now)
+            this.any_execute(`update ${this.tb_name} set ${valor.toString()}, update_at=? where${combin.toString()}`, date_now)
             .then((res) => resolve(res))
             .catch((err) => reject(err))
         })
-    },
-    delete: function(where = {}){
+    }
+    delete(where = {}) {
         if(where === undefined){
             throw Error("no se ha asignado un objeto para eliminar")
         }
         const del = utils.get_find_properties(where)
         const valores = utils.get_condicional(del).toString()
         return new Promise((resolve, reject) => {
-            this.any_execute(`delete from consulta.users where${valores}`)
+            this.any_execute(`delete from ${this.tb_name} where${valores}`)
             .then((res) => resolve(res))
             .catch((err) => reject(err))
         })
@@ -128,4 +135,4 @@ const operations = {
 }
 
 
-module.exports = operations
+module.exports = Operaciones

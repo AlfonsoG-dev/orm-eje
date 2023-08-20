@@ -1,10 +1,7 @@
-const operation = require('./services/Operations')
+const operations = require('./services/Operations')
+const conn = require('./services/DbConection')
+const op = new operations('test_db', 'test', conn.normal_conection('test_db'))
 
-const eliminar = {
-    id: 5, 
-    nombre: 'test_mio',
-}
-
-operation.delete(eliminar)
+op.read({options: 'nombre', limit: 1})
 .then((res) => console.log(res))
 .catch((err) => {throw err})

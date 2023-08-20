@@ -4,7 +4,7 @@
   "description": "intento hacer una especie de orm básico",
   "main": "App.js",
   "scripts": {
-    "start": "node App.js",
+    "start": "node src/App.js",
     "test": "test"
   },
   "keywords": [
