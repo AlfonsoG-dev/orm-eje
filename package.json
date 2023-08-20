@@ -1,0 +1,17 @@
+{
+  "name": "orm-eje",
+  "version": "0.0.1",
+  "description": "intento hacer una especie de orm básico",
+  "main": "App.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "orm"
+  ],
+  "author": "Alfonso Gomajoa",
+  "license": "MIT",
+  "dependencies": {
+    "mysql2": "^3.6.0"
+  }
+}
