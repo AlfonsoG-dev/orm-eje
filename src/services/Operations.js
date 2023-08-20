@@ -105,7 +105,10 @@ class Operaciones {
             .catch((err) => reject(err))
         })
     }
-    //TODO: por el momento solo actualiza por id en la condición 
+    /*
+     * el primer elemento del objeto se utiliza para actualizar el objeto
+     * objeto en la posición 1 re remueve de la acutalización y se utiliza como condicional
+     * */
     update(obj) {
         if(obj === undefined){
             throw Error("no se ha asignado ningun objeto para actualizar")
