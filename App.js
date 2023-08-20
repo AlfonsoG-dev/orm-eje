@@ -16,55 +16,41 @@ const db_conection = {
 
 //validar datos modelos
 const User = {
-    id: 0,
-    nombre: '',
-    email: '',
-    password: '',
-    rol: ''
+    id: 'int not null unique primary key auto_increment',
+    nombre: 'varchar(100) not null unique',
+    email: 'varchar(100) not null unique',
+    password: 'varchar(100) not null unique',
+    rol: 'varchar(50)',
+    create_at: 'datetime not null',
+    update_at: 'datetime'
 }
 
 const utils = {
     get_properties: function(obj = {}){
-        let valores = []
-        let d;
-        for(let p in obj){
-            if(typeof obj[p] === 'string'){
-                valores.push({[p]: 'varchar(100)'})
-            }
-            if(typeof obj[p] === 'number'){
-                valores.push({[p]: 'int'})
-            }
-            if(p === 'id'){
-                 d = valores.at(valores.indexOf('int'))
-                 d['id'] = `${d['id']} primary key auto_increment`
-            }
+        const keys = Object.keys(obj)
+        const values = Object.values(obj)
+        return {
+            keys,
+            values,
         }
-        return valores
-    },
-    transformar_valores: function(lista = []){
-        let mio = {}
-        for(let v of lista){
-            mio = Object.assign(mio, v)
-        }
-        return mio
     }
 }
 
 const properties = utils.get_properties(User)
-//console.log(properties)
-const list = utils.transformar_valores(properties)
-const nombres = Object.keys(list)
-const tipos = Object.values(list)
-//console.log(`${nombres} ${tipos}`)
-    let completas = ''
-for(let a in nombres){
-    completas +=` ${nombres[a]} ${tipos[a]},`
+const k = properties['keys']
+const v = properties['values']
+//console.log(k)
+//console.log(v)
+let completas = [];
+for(let pr in k){
+    completas.push(`${k[pr]} ${v[pr]},`)
 }
-const triling = completas.substr(0, completas.length-1)
-//console.log(triling)
+const texto = completas.join(" ")
+const trim = texto.substr(0, texto.length-1)
+console.log(trim)
 async function call(){
     const con = db_conection.normal_conection("localhost", "test_user", "5x5W12", "consulta")
-    const data = await con.execute(`create table if not exists test (${triling})`)
+    const data = await con.execute(`create table if not exists test(${trim})`)
     if(data !== undefined){
         console.log(data)
     }
