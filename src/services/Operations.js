@@ -110,10 +110,13 @@ const operations = {
         })
     },
     delete: function(where = {}){
-        console.log(where)
-        return;
+        if(where === undefined){
+            throw Error("no se ha asignado un objeto para eliminar")
+        }
+        const del = utils.get_find_properties(where)
+        const valores = utils.get_condicional(del).toString()
         return new Promise((resolve, reject) => {
-            this.any_execute('')
+            this.any_execute(`delete from consulta.users where${valores}`)
             .then((res) => resolve(res))
             .catch((err) => reject(err))
         })
