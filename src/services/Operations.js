@@ -4,7 +4,7 @@ const utils = require('../utils/DbUtils')
 
 //operaciones
 class Operaciones {
-    constructor(db_name = '', tb_name = '', connection){
+    constructor(db_name, tb_name, connection){
         if(tb_name === undefined || connection === undefined || db_name === undefined){
             throw Error("no se puede crear las operaciones")
         }
@@ -46,7 +46,7 @@ class Operaciones {
             })
         })
     }
-    read({options = '', limit = ''}){
+    read({options, limit}){
         if(options === undefined && limit === undefined){
             throw Error("asignar los datos correspondientas para {options} y {limit}")
         }
@@ -89,7 +89,7 @@ class Operaciones {
         })
     }
 
-    save(obj = {}){
+    save(obj){
         if(obj === undefined){
             throw Error("no se ha asignado ningun objeto para guardar")
         }
@@ -106,7 +106,7 @@ class Operaciones {
         })
     }
     //TODO: por el momento solo actualiza por id en la condición 
-    update(obj = {}) {
+    update(obj) {
         if(obj === undefined){
             throw Error("no se ha asignado ningun objeto para actualizar")
         }
@@ -119,7 +119,7 @@ class Operaciones {
             .catch((err) => reject(err))
         })
     }
-    delete(where = {}) {
+    delete(where) {
         if(where === undefined){
             throw Error("no se ha asignado un objeto para eliminar")
         }
