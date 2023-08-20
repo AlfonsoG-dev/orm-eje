@@ -64,7 +64,7 @@ const triling = completas.substr(0, completas.length-1)
 //console.log(triling)
 async function call(){
     const con = db_conection.normal_conection("localhost", "test_user", "5x5W12", "consulta")
-    const data = await con.execute(`create table test (${triling})`)
+    const data = await con.execute(`create table if not exists test (${triling})`)
     if(data !== undefined){
         console.log(data)
     }
