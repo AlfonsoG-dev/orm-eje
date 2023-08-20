@@ -35,6 +35,10 @@ const utils = {
     },
     get_condicional: function(properties = ''){
         return properties.replaceAll(',' , ' and')
+    },
+    get_date_format(){
+        const date_now = new Date(Date.now())
+        return date_now
     }
 }
 

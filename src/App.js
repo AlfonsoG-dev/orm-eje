@@ -1,22 +1,9 @@
 const operation = require('./services/Operations')
-
-//operation.test_db('consulta')
-//operation.create_table('consulta')
-operation.read({options: 'nombre, email, password', limit: '1'})
-.then((res) => {return})
-.catch((err) => {throw Error(err)})
-
-const buscado = {
-    where: {
-        nombre:'test',
-        email: 'test@gmail',
-        password: 'test'
-    }
+const nUser = {
+    nombre: 'mio',
+    email: 'mio@gmail',
+    password: 'mio'
 }
-operation.find({
-    where:{
-        nombre: 'alfonso'
-    }
-})
+operation.save(nUser)
 .then((res) => console.log(res))
 .catch((err) => {throw err})

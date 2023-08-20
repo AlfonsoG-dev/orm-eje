@@ -32,7 +32,7 @@ const operations = {
             })
         })
     },
-    any_execute: function(sql = '', args){
+    any_execute: function(sql = '', ...args){
         return new Promise((resolve, reject) => {
             cursor.execute(sql, args, function(err, res) {
                 if(err) reject(err)
@@ -52,6 +52,20 @@ const operations = {
         const p_clean = utils.get_condicional(properties)
         return new Promise((resolve, reject) =>{
             this.any_execute(`select nombre from consulta.users where${p_clean}`)
+            .then((res) => resolve(res))
+            .catch((err) => reject(err))
+        })
+    },
+    save: function(obj = {}){
+        const {keys, values} = utils.get_properties(obj)
+        const date_format = utils.get_date_format()
+        const t_va = []
+        for(let i of values){
+            t_va.push(`'${i}'`)
+        }
+        console.log(date_format)
+        return new Promise((resolve, reject) =>{
+            this.any_execute(`insert into consulta.users(${keys.toString()}, create_at) values(${t_va.toString()}, ?)`, date_format)
             .then((res) => resolve(res))
             .catch((err) => reject(err))
         })
