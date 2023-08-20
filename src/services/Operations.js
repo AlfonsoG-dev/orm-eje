@@ -2,7 +2,6 @@
 const db_conection = require('../services/DbConection')
 const User = require('../model/DbModel')
 const utils = require('../utils/DbUtils')
-const {AxiosHeaders} = require('axios')
 
 //utilidades
 const cursor = db_conection.normal_conection("localhost", "test_user", "5x5W12")
@@ -37,8 +36,15 @@ const operations = {
         return new Promise((resolve, reject) => {
             cursor.execute(sql, args, function(err, res) {
                 if(err) reject(err)
-                resolve(rs)
+                resolve(res)
             })
+        })
+    },
+    read: function({options = '', limit = ''}){
+        return new Promise((resolve, reject) =>{
+            this.any_execute(`select ${options} from consulta.users limit ${limit}`)
+            .then((res) => resolve(res))
+            .catch((err) => reject(err))
         })
     }
 }
