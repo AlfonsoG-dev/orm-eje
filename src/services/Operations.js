@@ -1,5 +1,5 @@
 //dependencias
-const User = require('../model/DbModel')
+const Model = require('../model/DbModel')
 const utils = require('../utils/DbUtils')
 
 //operaciones
@@ -24,7 +24,7 @@ class Operaciones {
         }
     }
     async create_table(){
-        const trim = utils.get_clean_properties(User)
+        const trim = utils.get_clean_properties(Model)
         const data = await this.cursor.execute(`create table if not exists ${this.tb_name}(${trim})`)
         if(data !== undefined){
             return data
