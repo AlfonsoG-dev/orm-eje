@@ -68,6 +68,8 @@ const operations = {
 
         }
     },
+    //TODO: por el momento retorna todos los campos del elemento buscado
+    //se deberia dar la opción de obtener solo lo necesario
     find: function({where}){
         if(where === undefined){
             throw Error("debe asignar un objeto con la propiedad ¡{where: {condicion}}!")
@@ -75,7 +77,7 @@ const operations = {
         const properties = utils.get_find_properties(where)
         const p_clean = utils.get_condicional(properties)
         return new Promise((resolve, reject) =>{
-            this.any_execute(`select nombre from consulta.users where${p_clean}`)
+            this.any_execute(`select * from consulta.users where${p_clean}`)
             .then((res) => resolve(res))
             .catch((err) => reject(err))
         })
@@ -96,6 +98,7 @@ const operations = {
             .catch((err) => reject(err))
         })
     },
+    //TODO: por el momento solo actualiza por id en la condición 
     update: function(obj = {}){
         if(obj === undefined){
             throw Error("no se ha asignado ningun objeto para actualizar")
