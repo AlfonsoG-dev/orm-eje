@@ -21,6 +21,20 @@ const utils = {
         const trim = texto.substr(0, texto.length-1)
         //console.log(trim)
         return trim
+    },
+    get_find_properties: function(obj = {}){
+        //console.log(where)
+        const data = utils.get_properties(obj)
+        const keys = data['keys']
+        const values = data['values']
+        let tratado = []
+        for(let i in keys){
+            tratado.push(` ${keys[i]}='${values[i]}'`)
+        }
+        return tratado.toString()
+    },
+    get_condicional: function(properties = ''){
+        return properties.replaceAll(',' , ' and')
     }
 }
 
