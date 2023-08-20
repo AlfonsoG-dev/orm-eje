@@ -81,3 +81,8 @@ op.delete({
 }).then((res) => console.log(res))
 .catch((err) => {throw err})
 ```
+
+# Disclaimer
+>>- Este proyecto tiene el objetivo de replicar la funcionalidad de un ORM
+>>- No se tiene en cuenta medidas de seguridad como SQL inyection entre otros
+>>- Simplemente es un proyecto para aprender sobre JS y la forma en la que un ORM se comporta
