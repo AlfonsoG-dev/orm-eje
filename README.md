@@ -18,6 +18,20 @@
 
 ### Uso
 
+>>- conexión a base de datos: por el momento solo funciona con `mysql`
+```js
+normal_conection: function(db_name = ''){
+        return mysql.createConnection({
+            host: 'localhost',
+            user: 'test_user',
+            password: '5x5W12',
+            database: db_name
+        })
+
+```
+
+>>- uso de las operaciones
+
 ```js
 const operations = require('./services/Operations')
 const conn = require('./services/DbConection')
