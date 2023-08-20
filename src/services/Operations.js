@@ -41,13 +41,37 @@ const operations = {
         })
     },
     read: function({options = '', limit = ''}){
-        return new Promise((resolve, reject) =>{
-            this.any_execute(`select ${options} from consulta.users limit ${limit}`)
-            .then((res) => resolve(res))
-            .catch((err) => reject(err))
-        })
+        if(options === undefined && limit === undefined){
+            throw Error("asignar los datos correspondientas para {options} y {limit}")
+        }
+        if(options !== undefined && limit !== undefined){
+            return new Promise((resolve, reject) =>{
+                this.any_execute(`select ${options} from consulta.users limit ${limit}`)
+                .then((res) => resolve(res))
+                .catch((err) => reject(err))
+            })
+        }
+        if(options === undefined){
+            return new Promise((resolve, reject) =>{
+                this.any_execute(`select * from consulta.users limit ${limit}`)
+                .then((res) => resolve(res))
+                .catch((err) => reject(err))
+            })
+
+        }
+        if(limit === undefined){
+            return new Promise((resolve, reject) =>{
+                this.any_execute(`select ${options} from consulta.users`)
+                .then((res) => resolve(res))
+                .catch((err) => reject(err))
+            })
+
+        }
     },
     find: function({where}){
+        if(where === undefined){
+            throw Error("debe asignar un objeto con la propiedad ¡{where: {condicion}}!")
+        }
         const properties = utils.get_find_properties(where)
         const p_clean = utils.get_condicional(properties)
         return new Promise((resolve, reject) =>{
@@ -57,6 +81,9 @@ const operations = {
         })
     },
     save: function(obj = {}){
+        if(obj === undefined){
+            throw Error("no se ha asignado ningun objeto para guardar")
+        }
         const {keys, values} = utils.get_properties(obj)
         const date_format = utils.get_date_format()
         const t_va = []
@@ -70,6 +97,9 @@ const operations = {
         })
     },
     update: function(obj = {}){
+        if(obj === undefined){
+            throw Error("no se ha asignado ningun objeto para actualizar")
+        }
         const combin = utils.get_find_properties(obj).split(',')
         const valor = combin.splice(1, combin.length)
         const date_now = utils.get_date_format()
@@ -78,6 +108,16 @@ const operations = {
             .then((res) => resolve(res))
             .catch((err) => reject(err))
         })
+    },
+    delete: function(where = {}){
+        console.log(where)
+        return;
+        return new Promise((resolve, reject) => {
+            this.any_execute('')
+            .then((res) => resolve(res))
+            .catch((err) => reject(err))
+        })
+        
     }
 }
 

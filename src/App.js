@@ -1,10 +1,10 @@
 const operation = require('./services/Operations')
 
-const uUser = {
-    id: 5,
+const eliminar = {
+    id: 5, 
     nombre: 'test_mio',
-    rol: 'test',
 }
-operation.update(uUser)
+
+operation.delete(eliminar)
 .then((res) => console.log(res))
 .catch((err) => {throw err})
