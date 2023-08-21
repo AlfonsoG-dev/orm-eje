@@ -10,6 +10,6 @@ op.read({options: 'nombre, email', limit: 1})
 .catch((err) => {throw err})
 
 
-op.make_migrations()
-.then((res) => {return res})
+/*op.make_migrations()
+.then((res) => {return res})*/
 

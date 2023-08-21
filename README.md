@@ -82,6 +82,28 @@ op.delete({
 .catch((err) => {throw err})
 ```
 
+## Uso para las migraciones
+>>- para migrar las propiedades del modelo a la base de datos es necesario llamar el método de manera manual
+```js
+//dependencias
+const operations = require('./services/Operations')
+const conn = require('./services/DbConection')
+
+//instancias
+const op = new operations('test_db', 'test', conn.normal_conection())
+
+//realizar migración
+op.make_migrations()
+.then((res) => {return res})
+```
+---
+>>- despues de migrar los datos la función lanzara un error informando: 
+`Error: Error: no se puede migrar datos que no existen
+    at Operaciones.make_migrations (C:\JavaScript\orm-eje\src\services\Operations.js:155:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) `
+
+---
+
 # Disclaimer
 >>- Este proyecto tiene el objetivo de replicar la funcionalidad de un ORM
 >>- No se tiene en cuenta medidas de seguridad como SQL inyection entre otros
