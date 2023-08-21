@@ -66,6 +66,31 @@ class Migrations{
         const trim = texto.substr(0, texto.length-1)
         return trim
     }
+    /*
+        ALTER TABLE `test_db`.`test` 
+        DROP FOREIGN KEY `test_ibfk_1`;
+        ALTER TABLE `test_db`.`test` 
+        DROP COLUMN `cuentas_fk`,
+        DROP INDEX `cuentas_fk` ;
+     * */
+    async drop_pk_fk(model){
+        const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
+        if(faltante === undefined){
+            throw Error("no hay columnas a eliminar")
+        }
+        let d_queries = []
+        for(let f of faltante){
+            if(model[f.split(" ")[0]] === undefined){
+                d_queries.push(' DROP FOREIGN KEY `'+`${f.split(" ")}`+'`;,')
+                //d_queries.push('DROP FOREIGN KEY `test_ibfk_1`;')
+            }else{
+                return undefined
+            }
+        }
+        const texto = d_queries.join("")
+        const trim = texto.substr(0, texto.length-1)
+        return trim
+    }
 
     //TODO: renombrar la columna
     async rename_columns(model){
@@ -79,6 +104,9 @@ class Migrations{
     async make_migration(){
         const new_columns = await this.add_columns(user)
         const d_columns = await this.drop_columns(user)
+        const fd_columns = await this.drop_pk_fk(user)
+        console.log(fd_columns)
+        //return
         if(new_columns !== "" && d_columns === undefined){
             const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
             const isPK = utils.add_primary_key(faltante)
@@ -91,7 +119,7 @@ class Migrations{
         //no se puede eliminar la columna de tipo foreign key
         if(d_columns !== "" && new_columns === ""){
             console.log("llegada")
-            const migration = Promise.all([ this.alter_table(d_columns)])
+            const migration = Promise.all([this.alter_table(fd_columns) ,this.alter_table(d_columns)])
             return migration
         }
     }

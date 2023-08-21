@@ -24,8 +24,8 @@ const utils = {
      * retorna la propiedad adicional del modelo
      */
     compare_properties: async function(m_model, db_name, tb_name, cursor){
-        if(m_model === undefined){
-            throw Error("el modelo es necesario")
+        if(m_model === undefined || db_name === undefined || tb_name === undefined || cursor === undefined){
+            throw Error("falta pasar argumentos")
         }
         const db_properties = await this.get_column_name(db_name, tb_name, cursor)
         const model_properties = this.get_properties(m_model)
@@ -129,7 +129,7 @@ const utils = {
         for(let k of ks){
             const b = k.match('fk')
             if(b !== null){
-                foreign_key.push(` add foreign key (${b['input']}) references ${tb_name}(${column_ref}) on delete cascade on update cascade`)
+                foreign_key.push(` add constraint ${b['input']} foreign key (${b['input']}) references ${tb_name}(${column_ref}) on delete cascade on update cascade`)
             }
         }
         return foreign_key
