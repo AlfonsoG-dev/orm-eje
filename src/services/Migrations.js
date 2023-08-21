@@ -49,6 +49,7 @@ class Migrations{
             return res
         }
     }
+    //TODO: hacer que se puede agregar y quitar columnas dependiendo del modelo y la tabla
     alter_table(columns){
         if(columns === undefined){
             throw Error("no column was provide")
