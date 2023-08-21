@@ -125,7 +125,7 @@ class Migrations{
             const migration = Promise.allSettled([this.alter_table(fd_columns) ,this.alter_table(d_columns)])
             return migration
         }
-        if(new_columns === undefined && d_columns === undefined && fd_columns === undefined){
+        if(new_columns === undefined && d_columns === undefined && fd_columns === undefined && rn_columns !== ''){
             const migration = await this.alter_table(rn_columns)
             return migration
         }
