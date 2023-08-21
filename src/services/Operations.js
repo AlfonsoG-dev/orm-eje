@@ -146,7 +146,7 @@ class Operaciones {
     }
     async make_migrations(){
         try{
-            const faltante = await this.migrate.compare_properties()
+            const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
             if(faltante === undefined){
                 throw Error("no se puede migrar datos que no existen")
             }

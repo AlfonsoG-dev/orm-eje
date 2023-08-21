@@ -1,19 +1,19 @@
 const utils = {
 
-    get_properti_fields: function(db_name, tb_name){
+    get_properti_fields: function(db_name, tb_name, cursor){
         if(db_name === undefined || tb_name === undefined){
             throw Error("es necesario el nombre de la tabla y base de datos")
         }
         return new Promise((resolve, reject) => {
-            this.cursor.execute(`show columns from ${db_name}.${tb_name}`, function(err, res){
+            cursor.execute(`show columns from ${db_name}.${tb_name}`, function(err, res){
                 if(err) reject(err)
                 resolve(res)
             })
         })
     },
 
-    get_column_name: async function(){
-        const data = await this.get_properti_fields()
+    get_column_name: async function(db_name, tb_name, cursor){
+        const data = await this.get_properti_fields(db_name, tb_name, cursor)
         const c_name = []
         for(let f of data){
             c_name.push(f['Field'])
@@ -23,11 +23,11 @@ const utils = {
     /*
      * retorna la propiedad adicional del modelo
      */
-    compare_properties: async function(m_model){
+    compare_properties: async function(m_model, db_name, tb_name, cursor){
         if(m_model === undefined){
             throw Error("el modelo es necesario")
         }
-        const db_properties = await this.get_column_name()
+        const db_properties = await this.get_column_name(db_name, tb_name, cursor)
         const model_properties = this.get_properties(m_model)
         const {keys, values} = model_properties
         if(db_properties.length === keys.length){

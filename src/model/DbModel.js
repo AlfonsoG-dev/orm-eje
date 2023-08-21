@@ -10,7 +10,7 @@ class User {
     update_at = 'datetime'
 }
 /*
-    apellido: 'varchar(100) not null',
-    dasad: 'varchar(100)',
+    apellido= 'varchar(100) not null'
+    dasad= 'varchar(100)'
  */
 module.exports = {User}

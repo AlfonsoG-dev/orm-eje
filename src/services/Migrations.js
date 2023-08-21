@@ -23,7 +23,7 @@ class Migrations{
         })
     }
     async make_queris(){
-        const faltante = await utils.compare_properties(user)
+        const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
         let queries = []
         for(let f of faltante){
             queries.push(` add column ${f},`)
