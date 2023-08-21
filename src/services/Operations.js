@@ -1,14 +1,14 @@
 //dependencias
-const models = require('../model/DbModel')
 const utils = require('../utils/DbUtils')
 const migrations = require('../services/Migrations')
-const user = new models.User()
 //operaciones
 class Operaciones {
-    constructor(db_name, tb_name, connection){
+    constructor(db_name, tb_name, connection, model){
         if(tb_name === undefined || connection === undefined || db_name === undefined){
             throw Error("no se puede crear las operaciones")
         }
+
+        this.model = model
         this.tb_name = tb_name
         this.db_name = db_name
         this.cursor = connection
@@ -33,7 +33,7 @@ class Operaciones {
         }
     }
     async create_table(){
-        const trim = utils.get_clean_properties(user)
+        const trim = utils.get_clean_properties(this.model)
         const data = await this.cursor.execute(`create table if not exists ${this.tb_name}(${trim})`)
         if(data !== undefined){
             return data
@@ -174,7 +174,7 @@ class Operaciones {
                 throw Error("no se puede migrar datos que no existen")
             }
              */
-            console.log(await this.migrate.make_migration())
+            console.log(await this.migrate.make_migration(this.model))
         }catch(err) {
             throw Error(err)
         }

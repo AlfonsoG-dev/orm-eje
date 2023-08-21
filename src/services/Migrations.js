@@ -1,7 +1,4 @@
-const models = require('../model/DbModel')
 const utils = require('../utils/DbUtils')
-
-const user = new models.User()
 class Migrations{
 
     constructor(db_name, tb_name, conection){
@@ -102,11 +99,11 @@ class Migrations{
     async change_columns_type(model){
         throw Error("not implemented yet")
     }
-    async make_migration(){
-        const new_columns = await this.add_columns(user)
-        const d_columns = await this.drop_columns(user)
-        const fd_columns = await this.drop_fk(user)
-        const rn_columns = await this.rename_columns(user)
+    async make_migration(model){
+        const new_columns = await this.add_columns(model)
+        const d_columns = await this.drop_columns(model)
+        const fd_columns = await this.drop_fk(model)
+        const rn_columns = await this.rename_columns(model)
         console.log({
             new_columns,
             d_columns,
@@ -114,7 +111,7 @@ class Migrations{
             rn_columns
         })
         if(new_columns !== undefined && d_columns === undefined){
-            const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
+            const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
             const isPK = utils.add_primary_key(faltante)
             const isFK = utils.add_foreign_key(faltante, '`test_db`.`cuentas`', 'cuenta_id')
             const pk_fk_columns = await this.add_pk_or_fk(isPK, isFK, 'cuenta_id')
