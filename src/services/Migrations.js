@@ -23,7 +23,6 @@ class Migrations{
     async add_columns(model){
         const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
-            //throw Error("la tabla y el modelo se encuentran sincronizados")
             return undefined
         }
         let queries = []
@@ -51,7 +50,6 @@ class Migrations{
     async drop_columns(model){
         const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
-            //throw Error("la tabla y el modelo se encuentran sincronizados")
             return undefined
         }
         let d_queries = []
@@ -69,14 +67,12 @@ class Migrations{
     async drop_fk(model){
         const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
-            //throw Error("no hay columnas a eliminar")
             return undefined
         }
         let d_queries = []
         for(let f of faltante){
             if(model[f.split(" ")[0]] === undefined){
                 d_queries.push(' DROP FOREIGN KEY `'+`${f.split(" ")}`+'`;,')
-                //d_queries.push('DROP FOREIGN KEY `test_ibfk_1`;')
             }else{
                 return undefined
             }
@@ -85,8 +81,6 @@ class Migrations{
         const trim = texto.substr(0, texto.length-1)
         return trim
     }
-
-    //TODO: renombrar la columna
     async rename_columns(model){
         const db_properties = await utils.get_column_name(this.db_name, this.tb_name, this.cursor)
         const {keys, values} = utils.get_properties(model)
