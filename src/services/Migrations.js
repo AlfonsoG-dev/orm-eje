@@ -21,6 +21,7 @@ class Migrations{
             })
         })
     }
+    //:TODO: para agregar column como FK se tiene que modificar la query creada para alter table
     async add_columns(model){
         const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
         let queries = []
@@ -53,6 +54,16 @@ class Migrations{
         const texto = d_queries.join("")
         const trim = texto.substr(0, texto.length-1)
         return trim
+    }
+
+    //TODO: renombrar la columna
+    async rename_columns(model){
+        throw Error("not implemented yet")
+    }
+
+    //TODO: change column data type
+    async change_columns_type(model){
+        throw Error("not implemented yet")
     }
     async make_migration(){
         const new_columns = await this.add_columns(user)
