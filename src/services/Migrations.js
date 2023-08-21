@@ -11,10 +11,10 @@ class Migrations{
     }
     alter_table(columns){
         if(columns === undefined){
-            throw Error("no column was provide")
+            return undefined
         }
         return new Promise((resolve, reject) => {
-            this.cursor.execute(`alter table ${this.db_name}.${this.tb_name}${columns}`, function(err, res){
+            this.cursor.execute(`alter table ${this.db_name}.${this.tb_name}${columns};`, function(err, res){
                 if(err) reject(err)
                 resolve(res)
             })
@@ -23,7 +23,8 @@ class Migrations{
     async add_columns(model){
         const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
-            throw Error("la tabla y el modelo se encuentran sincronizados")
+            //throw Error("la tabla y el modelo se encuentran sincronizados")
+            return undefined
         }
         let queries = []
         for(let f of faltante){
@@ -50,7 +51,8 @@ class Migrations{
     async drop_columns(model){
         const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
-            throw Error("la tabla y el modelo se encuentran sincronizados")
+            //throw Error("la tabla y el modelo se encuentran sincronizados")
+            return undefined
         }
         let d_queries = []
         for(let f of faltante){
@@ -67,7 +69,8 @@ class Migrations{
     async drop_fk(model){
         const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
-            throw Error("no hay columnas a eliminar")
+            //throw Error("no hay columnas a eliminar")
+            return undefined
         }
         let d_queries = []
         for(let f of faltante){
@@ -85,7 +88,20 @@ class Migrations{
 
     //TODO: renombrar la columna
     async rename_columns(model){
-        throw Error("not implemented yet")
+        const db_properties = await utils.get_column_name(this.db_name, this.tb_name, this.cursor)
+        const {keys, values} = utils.get_properties(model)
+        let old_column;
+        let rename_queries = [];
+        for(let p in db_properties){
+            if(model[db_properties[p]] === undefined){
+                old_column = p
+                rename_queries.push(` rename column ${db_properties[p]} to ${keys[old_column]},`)
+            }
+        }
+        const texto = rename_queries.join("")
+        const trim = texto.substr(0, texto.length-1)
+        return trim
+
     }
 
     //TODO: change column data type
@@ -96,20 +112,27 @@ class Migrations{
         const new_columns = await this.add_columns(user)
         const d_columns = await this.drop_columns(user)
         const fd_columns = await this.drop_fk(user)
-        console.log(fd_columns)
-        //return
-        if(new_columns !== "" && d_columns === undefined){
+        const rn_columns = await this.rename_columns(user)
+        console.log({
+            new_columns,
+            d_columns,
+            fd_columns,
+            rn_columns
+        })
+        if(new_columns !== undefined && d_columns === undefined){
             const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
             const isPK = utils.add_primary_key(faltante)
             const isFK = utils.add_foreign_key(faltante, '`test_db`.`cuentas`', 'cuenta_id')
             const pk_fk_columns = await this.add_pk_or_fk(isPK, isFK, 'cuenta_id')
-            console.log("ingresa a ")
-            const migration = Promise.all([this.alter_table(new_columns), this.alter_table(pk_fk_columns)])
+            const migration = Promise.allSettled([this.alter_table(new_columns), this.alter_table(pk_fk_columns)])
             return migration
         }
-        if(d_columns !== "" && new_columns === ""){
-            console.log("llegada")
+        if(d_columns !== undefined && new_columns === ''){
             const migration = Promise.allSettled([this.alter_table(fd_columns) ,this.alter_table(d_columns)])
+            return migration
+        }
+        if(new_columns === undefined && d_columns === undefined && fd_columns === undefined){
+            const migration = await this.alter_table(rn_columns)
             return migration
         }
     }
