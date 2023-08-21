@@ -97,12 +97,13 @@ op.make_migrations()
 .then((res) => {return res})
 ```
 ---
->>- despues de migrar los datos, si se ejecuta de nuevo la función lanzar el siguiente error: 
+>>- Al teminar la migración de los datos, si se ejecuta de nuevo se lanza el siguiente error: 
 `Error: Error: no se puede migrar datos que no existen
     at Operaciones.make_migrations (C:\JavaScript\orm-eje\src\services\Operations.js:155:19)
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5) `
 
->>- como el modelo es el mismo que la tabla en la base de datos no es necesario llamar para realizar la migración
+>>- Ya que el modelo es el mismo que la tabla en la base de datos no es necesario ejecutar la migración
+>>- Por lo tanto al terminar la migracion eliminar o comentar el llamado al método de migración
 
 ---
 
