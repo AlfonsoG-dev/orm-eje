@@ -1,4 +1,50 @@
 const utils = {
+
+    get_properti_fields: function(db_name, tb_name){
+        if(db_name === undefined || tb_name === undefined){
+            throw Error("es necesario el nombre de la tabla y base de datos")
+        }
+        return new Promise((resolve, reject) => {
+            this.cursor.execute(`show columns from ${db_name}.${tb_name}`, function(err, res){
+                if(err) reject(err)
+                resolve(res)
+            })
+        })
+    },
+
+    get_column_name: async function(){
+        const data = await this.get_properti_fields()
+        const c_name = []
+        for(let f of data){
+            c_name.push(f['Field'])
+        }
+        return c_name
+    },
+    /*
+     * retorna la propiedad adicional del modelo
+     */
+    compare_properties: async function(m_model){
+        if(m_model === undefined){
+            throw Error("el modelo es necesario")
+        }
+        const db_properties = await this.get_column_name()
+        const model_properties = this.get_properties(m_model)
+        const {keys, values} = model_properties
+        if(db_properties.length === keys.length){
+            return;
+        }else{
+            const faltante = keys.filter((key) => db_properties.includes(key) !== true)
+            let index = [];
+            for(let f of faltante){
+                index.push(model_properties['keys'].indexOf(f))
+            }
+            let res = []
+            for(let i of index){
+                res.push(`${keys[i]} ${values[i]}`)
+            }
+            return res
+        }
+    },
     get_properties: function(obj = {}){
         const keys = Object.keys(obj)
         const values = Object.values(obj)
