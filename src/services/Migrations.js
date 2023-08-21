@@ -47,8 +47,6 @@ class Migrations{
             return trim
         }
     }
-
-    //TODO: permitir eliminar la foreign key
     async drop_columns(model){
         const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
@@ -66,13 +64,6 @@ class Migrations{
         const trim = texto.substr(0, texto.length-1)
         return trim
     }
-    /*
-        ALTER TABLE `test_db`.`test` 
-        DROP FOREIGN KEY `test_ibfk_1`;
-        ALTER TABLE `test_db`.`test` 
-        DROP COLUMN `cuentas_fk`,
-        DROP INDEX `cuentas_fk` ;
-     * */
     async drop_pk_fk(model){
         const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
@@ -116,10 +107,9 @@ class Migrations{
             const migration = Promise.all([this.alter_table(new_columns), this.alter_table(pk_fk_columns)])
             return migration
         }
-        //no se puede eliminar la columna de tipo foreign key
         if(d_columns !== "" && new_columns === ""){
             console.log("llegada")
-            const migration = Promise.all([this.alter_table(fd_columns) ,this.alter_table(d_columns)])
+            const migration = Promise.allSettled([this.alter_table(fd_columns) ,this.alter_table(d_columns)])
             return migration
         }
     }
