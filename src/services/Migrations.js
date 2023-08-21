@@ -64,7 +64,7 @@ class Migrations{
         const trim = texto.substr(0, texto.length-1)
         return trim
     }
-    async drop_pk_fk(model){
+    async drop_fk(model){
         const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
             throw Error("no hay columnas a eliminar")
@@ -95,7 +95,7 @@ class Migrations{
     async make_migration(){
         const new_columns = await this.add_columns(user)
         const d_columns = await this.drop_columns(user)
-        const fd_columns = await this.drop_pk_fk(user)
+        const fd_columns = await this.drop_fk(user)
         console.log(fd_columns)
         //return
         if(new_columns !== "" && d_columns === undefined){
