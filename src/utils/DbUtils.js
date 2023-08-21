@@ -32,7 +32,8 @@ const utils = {
         const {keys, values} = model_properties
         if(db_properties.length === keys.length){
             return;
-        }else{
+        }
+        if(keys.length > db_properties.length){
             const faltante = keys.filter((key) => db_properties.includes(key) !== true)
             let index = [];
             for(let f of faltante){
@@ -43,6 +44,10 @@ const utils = {
                 res.push(`${keys[i]} ${values[i]}`)
             }
             return res
+        }
+        if(db_properties.length > keys.length){
+            const faltante = db_properties.filter((k) => keys.includes(k) === false)
+            return faltante
         }
     },
     get_properties: function(obj = {}){
