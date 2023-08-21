@@ -1,6 +1,7 @@
 //dependencias
 const Model = require('../model/DbModel')
 const utils = require('../utils/DbUtils')
+const migrations = require('../services/Migrations')
 
 //operaciones
 class Operaciones {
@@ -14,6 +15,7 @@ class Operaciones {
         this.test_db()
         this.select_db()
         this.create_table()
+        this.migrate = new migrations(this.db_name, this.tb_name, this.cursor);
     }
     test_db(){
         const data = this.cursor.connect()
@@ -141,6 +143,17 @@ class Operaciones {
             .catch((err) => reject(err))
         })
         
+    }
+    async make_migrations(){
+        try{
+            const faltante = await this.migrate.compare_properties()
+            if(faltante === undefined){
+                throw Error("no se puede migrar datos que no existen")
+            }
+            await this.migrate.make_migration()
+        }catch(err) {
+            throw Error(err)
+        }
     }
 }
 

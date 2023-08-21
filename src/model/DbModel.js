@@ -9,5 +9,8 @@ const User = {
     create_at: 'datetime not null',
     update_at: 'datetime'
 }
-
+/*
+    apellido: 'varchar(100) not null',
+    dasad: 'varchar(100)',
+ */
 module.exports = User
