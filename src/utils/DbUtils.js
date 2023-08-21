@@ -69,7 +69,7 @@ const utils = {
             completas.push(`${k[pr]} ${v[pr]},`)
         }
         const texto = completas.join(" ")
-        const trim = texto.substr(0, texto.length-1)
+        const trim = texto.substring(0, texto.length-1)
         //console.log(trim)
         return trim
     },

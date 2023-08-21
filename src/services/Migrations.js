@@ -18,7 +18,7 @@ class Migrations{
         })
     }
     async add_columns(model){
-        const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
+        const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
             return undefined
         }
@@ -29,23 +29,23 @@ class Migrations{
             }
         }
         const texto = queries.join("")
-        const trim = texto.substr(0, texto.length)
+        const trim = texto.substring(0, texto.length)
         return trim
     }
     async add_pk_or_fk(isPK = [], isFK = [], column_ref){
         if(isPK.length > 0 && isFK.length === 0){
             const texto = ` ${isPK},`
-            const trim = texto.substr(0, texto.length-1)
+            const trim = texto.substring(0, texto.length-1)
             return trim
         }
         if(isFK.length > 0 && isPK.length === 0 && column_ref !== undefined){
             const texto = ` ${isFK},`
-            const trim = texto.substr(0, texto.length-1)
+            const trim = texto.substring(0, texto.length-1)
             return trim
         }
     }
     async drop_columns(model){
-        const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
+        const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
             return undefined
         }
@@ -58,7 +58,7 @@ class Migrations{
             }
         }
         const texto = d_queries.join("")
-        const trim = texto.substr(0, texto.length-1)
+        const trim = texto.substring(0, texto.length-1)
         return trim
     }
     async drop_fk(model){
@@ -75,7 +75,7 @@ class Migrations{
             }
         }
         const texto = d_queries.join("")
-        const trim = texto.substr(0, texto.length-1)
+        const trim = texto.substring(0, texto.length-1)
         return trim
     }
     async rename_columns(model){
@@ -90,7 +90,7 @@ class Migrations{
             }
         }
         const texto = rename_queries.join("")
-        const trim = texto.substr(0, texto.length-1)
+        const trim = texto.substring(0, texto.length-1)
         return trim
 
     }

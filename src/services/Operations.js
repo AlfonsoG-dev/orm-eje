@@ -97,7 +97,7 @@ class Operaciones {
                 queries.push(` count(${p}) as count_${p},`)
             }
             const texto = queries.join("")
-            const trim = texto.substr(0, texto.length-1)
+            const trim = texto.substring(0, texto.length-1)
             return new Promise((resolve, reject) => {
                 this.any_execute(`select${trim} from ${this.tb_name}`)
                 .then((res) => resolve(res))
