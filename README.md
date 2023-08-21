@@ -33,9 +33,22 @@ normal_conection: function(db_name = ''){
 >>- uso de las operaciones
 
 ```js
+//dependencias
 const operations = require('./services/Operations')
 const conn = require('./services/DbConection')
-const op = new operations('test_db', 'test', conn.normal_conection('test_db'))
+const models = require('./model/DbModel')
+
+
+//instancias
+const User = new models.User()
+const op = new operations('test_db', 'test', conn.normal_conection(), User)
+
+
+//contar 
+op.count_column({options: ['create_at']})
+.then((res) => console.log(res))
+.catch((err) => {throw err})
+
 
 //leer nombre y email de 2 registros
 op.read({options: 'nombre, email', limit:2})
@@ -88,9 +101,11 @@ op.delete({
 //dependencias
 const operations = require('./services/Operations')
 const conn = require('./services/DbConection')
+const models = require('./model/DbModel')
 
 //instancias
-const op = new operations('test_db', 'test', conn.normal_conection())
+const User = new models.User()
+const op = new operations('test_db', 'test', conn.normal_conection(), User)
 
 //realizar migración
 op.make_migrations()
