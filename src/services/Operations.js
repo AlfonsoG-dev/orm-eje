@@ -12,6 +12,7 @@ class Operaciones {
         this.db_name = db_name
         this.cursor = connection
         this.test_db()
+        this.select_db()
         this.create_table()
     }
     test_db(){
@@ -20,6 +21,12 @@ class Operaciones {
             return data
         }else{
             const data = this.cursor.execute(`create database if not exists ${this.db_name}`)
+            return data
+        }
+    }
+    select_db(){
+        const data = this.cursor.query(`use ${this.db_name}`)
+        if(data !== undefined){
             return data
         }
     }
