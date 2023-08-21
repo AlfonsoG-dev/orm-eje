@@ -79,7 +79,7 @@ class Migrations{
     async make_migration(){
         const new_columns = await this.add_columns(user)
         const d_columns = await this.drop_columns(user)
-        if(new_columns !== '' && d_columns === undefined){
+        if(new_columns !== "" && d_columns === undefined){
             const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
             const isPK = utils.add_primary_key(faltante)
             const isFK = utils.add_foreign_key(faltante, '`test_db`.`cuentas`', 'cuenta_id')
@@ -88,8 +88,9 @@ class Migrations{
             const migration = Promise.all([this.alter_table(new_columns), this.alter_table(pk_fk_columns)])
             return migration
         }
-        if(d_columns !== '' && new_columns === undefined){
-            const migration = await this.alter_table(d_columns)
+        if(d_columns !== "" && new_columns === ""){
+            console.log("llegada")
+            const migration = Promise.all([ this.alter_table(d_columns)])
             return migration
         }
     }
