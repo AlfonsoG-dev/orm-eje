@@ -25,7 +25,7 @@ class Migrations{
         const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
         let queries = []
         for(let f of faltante){
-            if(model[f] !== undefined){
+            if(model[f.split(" ")[0]] !== undefined){
                 queries.push(` add column ${f},`)
             }
             else{
@@ -44,7 +44,7 @@ class Migrations{
         }
         let d_queries = []
         for(let f of faltante){
-            if(model[f] === undefined){
+            if(model[f.split(" ")[0]] === undefined){
                 d_queries.push(` drop column ${f.split(" ")},`)
             }else{
                 return undefined
@@ -57,6 +57,8 @@ class Migrations{
     async make_migration(){
         const new_columns = await this.add_columns(user)
         const d_columns = await this.drop_columns(user)
+        console.log(new_columns)
+        console.log(d_columns)
         if(new_columns !== undefined && d_columns !== undefined){
             throw Error("la tabla posee datos que el modelo no y el modelo posee datos que la tabla no tiene \n intenta sincronizarlos primero")
         }
