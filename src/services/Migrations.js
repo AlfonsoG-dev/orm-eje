@@ -20,7 +20,6 @@ class Migrations{
             })
         })
     }
-    //:TODO: para agregar column como FK se tiene que modificar la query creada para alter table
     async add_columns(model){
         const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
@@ -49,6 +48,7 @@ class Migrations{
         }
     }
 
+    //TODO: permitir eliminar la foreign key
     async drop_columns(model){
         const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
@@ -88,6 +88,7 @@ class Migrations{
             const migration = Promise.all([this.alter_table(new_columns), this.alter_table(pk_fk_columns)])
             return migration
         }
+        //no se puede eliminar la columna de tipo foreign key
         if(d_columns !== "" && new_columns === ""){
             console.log("llegada")
             const migration = Promise.all([ this.alter_table(d_columns)])
