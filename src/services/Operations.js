@@ -152,7 +152,7 @@ class Operaciones {
                 throw Error("no se puede migrar datos que no existen")
             }
              */
-            await this.migrate.make_migration()
+            console.log(await this.migrate.make_migration())
         }catch(err) {
             throw Error(err)
         }

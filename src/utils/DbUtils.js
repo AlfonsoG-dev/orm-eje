@@ -90,6 +90,49 @@ const utils = {
     get_date_format(){
         const date_now = new Date(Date.now())
         return date_now
+    },
+
+    /**
+     * la columna ya debe haber sido creada para realizar la referencia
+     */
+    add_primary_key: function(keys){
+        if(keys === undefined){
+            throw Error("no hay primary_key parar agregar")
+        }
+        let ks = []
+        for(let k of keys){
+            let p = k.split(" ")[0]
+            ks.push(p)
+        }
+        let primary_key = [];
+        for(let k of ks){
+            const b = k.match('pk')
+            if(b !== null){
+                primary_key.push(` add constrain ${b['input']} primary key (${b['input']})`)
+            }
+        }
+        return primary_key
+    },
+    /*
+     * la columna debe hacer sido creada para realizar la referencia
+     * */
+    add_foreign_key: function(keys, tb_name, column_ref){
+        if(keys === undefined){
+            throw Error("no hay foreign_key parar agregar")
+        }
+        let ks = [];
+        for(let k of keys){
+            let p = k.split(" ")[0]
+            ks.push(p)
+        }
+        let foreign_key = [];
+        for(let k of ks){
+            const b = k.match('fk')
+            if(b !== null){
+                foreign_key.push(` add foreign key (${b['input']}) references ${tb_name}(${column_ref}) on delete cascade on update cascade`)
+            }
+        }
+        return foreign_key
     }
 }
 
