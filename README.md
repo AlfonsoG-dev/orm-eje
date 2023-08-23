@@ -57,6 +57,7 @@ op.read({options: 'nombre, email', limit:2})
 
 //buscar por id
 op.find({
+    options: ["nombre", "email"],
     where: {
         id: 1
     }

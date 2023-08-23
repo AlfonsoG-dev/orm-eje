@@ -110,7 +110,7 @@ class Operaciones {
         if(where === undefined){
             throw Error("debe asignar un objeto con la propiedad ¡{where: {condicion}}!")
         }
-        if(options === undefined){
+        if(options === undefined || options.length === 0){
             const properties = utils.get_find_properties(where)
             const p_clean = utils.get_condicional(properties)
             return new Promise((resolve, reject) =>{
@@ -119,10 +119,9 @@ class Operaciones {
                 .catch((err) => reject(err))
             })
         }
-        if(options !== undefined){
+        if(options !== undefined || options.length > 0){
             const properties = utils.get_find_properties(where)
             const p_clean = utils.get_condicional(properties)
-            const {columns} = utils.get_properties(options)
             let queries = []
             for(let p of options){
                 queries.push(` ${p},`)
