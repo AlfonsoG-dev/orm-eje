@@ -105,19 +105,36 @@ class Operaciones {
             })
         }
     }
-    //TODO: por el momento retorna todos los campos del elemento buscado
     //se deberia dar la opción de obtener solo lo necesario
-    find({where}){
+    find({options, where}){
         if(where === undefined){
             throw Error("debe asignar un objeto con la propiedad ¡{where: {condicion}}!")
         }
-        const properties = utils.get_find_properties(where)
-        const p_clean = utils.get_condicional(properties)
-        return new Promise((resolve, reject) =>{
-            this.any_execute(`select * from ${this.tb_name} where${p_clean}`)
-            .then((res) => resolve(res))
-            .catch((err) => reject(err))
-        })
+        if(options === undefined){
+            const properties = utils.get_find_properties(where)
+            const p_clean = utils.get_condicional(properties)
+            return new Promise((resolve, reject) =>{
+                this.any_execute(`select * from ${this.tb_name} where${p_clean}`)
+                .then((res) => resolve(res))
+                .catch((err) => reject(err))
+            })
+        }
+        if(options !== undefined){
+            const properties = utils.get_find_properties(where)
+            const p_clean = utils.get_condicional(properties)
+            const {columns} = utils.get_properties(options)
+            let queries = []
+            for(let p of options){
+                queries.push(` ${p},`)
+            }
+            const texto = queries.join("")
+            const trim = texto.substring(0, texto.length-1)
+            return new Promise((resolve, reject) =>{
+                this.any_execute(`select ${trim} from ${this.tb_name} where${p_clean}`)
+                .then((res) => resolve(res))
+                .catch((err) => reject(err))
+            })
+        }
     }
 
     save(obj){
