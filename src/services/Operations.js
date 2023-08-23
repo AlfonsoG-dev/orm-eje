@@ -190,7 +190,7 @@ class Operaciones {
                 throw Error("no se puede migrar datos que no existen")
             }
              */
-            console.log(await this.migrate.make_migration(this.model))
+            await this.migrate.make_migration(this.model)
         }catch(err) {
             throw Error(err)
         }

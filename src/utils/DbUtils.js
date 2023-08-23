@@ -75,7 +75,7 @@ const utils = {
     },
     get_find_properties: function(obj = {}){
         //console.log(where)
-        const data = utils.get_properties(obj)
+        const data = this.get_properties(obj)
         const keys = data['keys']
         const values = data['values']
         let tratado = []
@@ -116,7 +116,7 @@ const utils = {
     /*
      * la columna debe hacer sido creada para realizar la referencia
      * */
-    add_foreign_key: function(keys, tb_name, column_ref){
+    add_foreign_key: function(keys, ref_tb_name, column_ref){
         if(keys === undefined){
             throw Error("no hay foreign_key parar agregar")
         }
@@ -129,10 +129,24 @@ const utils = {
         for(let k of ks){
             const b = k.match('fk')
             if(b !== null){
-                foreign_key.push(` add constraint ${b['input']} foreign key (${b['input']}) references ${tb_name}(${column_ref}) on delete cascade on update cascade`)
+                foreign_key.push(` add constraint ${b['input']} foreign key (${b['input']}) references ${ref_tb_name}(${column_ref}) on delete cascade on update cascade`)
             }
         }
         return foreign_key
+    },
+    get_foreign_key: function(ref_model){
+        if(ref_model === undefined){
+            return undefined
+        }
+        const keys = Object.keys(ref_model)
+        let fk = [];
+        for(let p of keys){
+            const b = p.match('id')
+            if(b !== null){
+                fk.push(b['input'])
+            }
+        }
+        return fk
     }
 }
 

@@ -99,7 +99,7 @@ class Migrations{
     async change_columns_type(model){
         throw Error("not implemented yet")
     }
-    async make_migration(model){
+    async make_migration(model, ref_model, ref_tb_name){
         const new_columns = await this.add_columns(model)
         const d_columns = await this.drop_columns(model)
         const fd_columns = await this.drop_fk(model)
@@ -112,10 +112,17 @@ class Migrations{
         })
         if(new_columns !== undefined && d_columns === undefined){
             const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
-            const isPK = utils.add_primary_key(faltante)
-            const isFK = utils.add_foreign_key(faltante, '`test_db`.`cuentas`', 'cuenta_id')
-            const pk_fk_columns = await this.add_pk_or_fk(isPK, isFK, 'cuenta_id')
-            const migration = Promise.allSettled([this.alter_table(new_columns), this.alter_table(pk_fk_columns)])
+            let migration = Promise.all([this.alter_table(new_columns)])
+            if(ref_model !== undefined && ref_tb_name !== undefined){
+                const fk = utils.get_foreign_key(ref_model);
+                const isPK = utils.add_primary_key(faltante)
+                const isFK = utils.add_foreign_key(faltante, ref_tb_name, fk)
+                const pk_fk_columns = await this.add_pk_or_fk(isPK, isFK, fk)
+                migration = Promise.all([this.alter_table(pk_fk_columns)])
+                console.log({
+                    pk_fk_columns
+                })
+            }
             return migration
         }
         if(d_columns !== undefined && new_columns === ''){
