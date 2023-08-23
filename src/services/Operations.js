@@ -182,7 +182,7 @@ class Operaciones {
         })
         
     }
-    async make_migrations(){
+    async make_migrations(ref_model, ref_tb_name){
         try{
             /*
             const faltante = await utils.compare_properties(user, this.db_name, this.tb_name, this.cursor)
@@ -190,6 +190,9 @@ class Operaciones {
                 throw Error("no se puede migrar datos que no existen")
             }
              */
+            if(ref_model !== undefined && ref_tb_name !== undefined){
+                await this.migrate.make_migration(this.model, ref_model, ref_tb_name)
+            }
             await this.migrate.make_migration(this.model)
         }catch(err) {
             throw Error(err)

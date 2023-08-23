@@ -139,6 +139,37 @@ const op = new operations('test_db', 'test', conn.normal_conection(), User)
 >>- 'conn.normal_conection()' : conexión a la base de datos
 >>- 'User' : clase modelo para la tabla de la base de datos
 
+## Uso para relacionar con otro modelo
+
+### Llave foranea
+>>- se debe crear en el modelo que lleva la llave foranea una propiedad que tenga de nombre: `nombrePropiedadfk`.
+>>- si no tiene en el nombre `fk` no se puede realizar la creación de la llave foranea 
+### Llave que referencia
+>>- la llave primaria del modelo al que se hace referencia debe tener: `nombrePropiedadpk`
+>>- si no tienen en el nombre `pk` no se puede hacer la referencia 
+
+
+-> En los modelos se crean las siguientes propiedades para la relacionar
+```js
+class Cuenta{
+    cuenta_id_pk = '' // llave de referencia
+}
+
+class User{
+
+    cuenta_id_pk = '' // llave foranea
+}
+```
+
+-> en la clase pricipal se relacionan
+```js
+const userOp = new operations(database, table, conexión)
+const cuentaOp = new opreations(database, table, conexion)
+
+userOp.make_migrations(new Cuenta(), cuentaTable)
+.then((res) => {return res})
+```
+
 ---
 >>- Al teminar la migración de los datos, si se ejecuta de nuevo se lanza el siguiente error: 
 `Error: Error: no se puede migrar datos que no existen

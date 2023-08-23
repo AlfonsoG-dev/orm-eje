@@ -141,7 +141,7 @@ const utils = {
         const keys = Object.keys(ref_model)
         let fk = [];
         for(let p of keys){
-            const b = p.match('id')
+            const b = p.match('pk')
             if(b !== null){
                 fk.push(b['input'])
             }
