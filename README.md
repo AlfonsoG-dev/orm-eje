@@ -112,6 +112,33 @@ const op = new operations('test_db', 'test', conn.normal_conection(), User)
 op.make_migrations()
 .then((res) => {return res})
 ```
+## Migraciones 
+>- por el momento solo soporta los siguientes métodos
+>>- crear base de datos
+>>- crear tabla en base al modelo
+>>- agregar columnas
+>>- renombrar columnas
+>>- eliminar columnas 
+>- todo lo anterior se realiza de manera automática 
+>- solo debes hacer modificaciones al modelo
+
+---
+
+>- solo el llamar esté método permite migrar las modificaciones del modelo de manera automática 
+
+```js
+op.make_migrations()
+.then((res) => {return res})
+```
+>- al llamar el siguiente método se crea la base de datos y la tabla en base al modelo
+```js
+const op = new operations('test_db', 'test', conn.normal_conection(), User)
+```
+>>- 'test_db' : nombre de la base de datos.
+>>- 'test' : nombre de la tabla
+>>- 'conn.normal_conection()' : conexión a la base de datos
+>>- 'User' : clase modelo para la tabla de la base de datos
+
 ---
 >>- Al teminar la migración de los datos, si se ejecuta de nuevo se lanza el siguiente error: 
 `Error: Error: no se puede migrar datos que no existen
