@@ -174,8 +174,13 @@ class User{
 
 -> en la clase pricipal se relacionan
 ```js
-const userOp = new operations(database, table, conexión)
-const cuentaOp = new opreations(database, table, conexion)
+//modelos
+const User = new model.User()
+const Cuenta = new model.Cuenta()
+
+//operaciones
+const userOp = new operations(database, table, conexión, User)
+const cuentaOp = new opreations(database, table, conexion, Cuenta)
 
 userOp.make_migrations(new Cuenta(), cuentaTable)
 .then((res) => {return res})
