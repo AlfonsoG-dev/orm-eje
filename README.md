@@ -31,10 +31,10 @@ normal_conection: function(db_name = ''){
 ```
 
 >>- modelo para la base de datos:
->>- en la carpeta _Models_: `mkdir ./src/model` -> crear el archivo "DbModel.js": `touch DbModel.js`
+>>- crear una carpeta _model_: `mkdir ./src/model` -> crear el archivo "DbModel.js": `touch DbModel.js`
 >>- en el archivo crear los modelos necesarios
 ```js
-class User{
+class User {
     user_id_pk = 'int not null unique primary kay auto_increment'
     nombre = 'varchar(100) not null'
     email = 'varchar(100) not null unique'
