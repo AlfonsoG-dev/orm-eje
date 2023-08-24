@@ -1,6 +1,6 @@
 const utils = {
 
-    get_properti_fields: function(db_name, tb_name, cursor){
+    get_table_properties: function(db_name, tb_name, cursor){
         if(db_name === undefined || tb_name === undefined){
             throw Error("es necesario el nombre de la tabla y base de datos")
         }
@@ -12,8 +12,8 @@ const utils = {
         })
     },
 
-    get_column_name: async function(db_name, tb_name, cursor){
-        const data = await this.get_properti_fields(db_name, tb_name, cursor)
+    get_table_column: async function(db_name, tb_name, cursor){
+        const data = await this.get_table_properties(db_name, tb_name, cursor)
         const c_name = []
         for(let f of data){
             c_name.push(f['Field'])
@@ -27,8 +27,8 @@ const utils = {
         if(m_model === undefined || db_name === undefined || tb_name === undefined || cursor === undefined){
             throw Error("falta pasar argumentos")
         }
-        const db_properties = await this.get_column_name(db_name, tb_name, cursor)
-        const model_properties = this.get_properties(m_model)
+        const db_properties = await this.get_table_column(db_name, tb_name, cursor)
+        const model_properties = this.get_model_properties(m_model)
         const {keys, values} = model_properties
         if(db_properties.length === keys.length){
             return;
@@ -50,7 +50,7 @@ const utils = {
             return faltante
         }
     },
-    get_properties: function(obj = {}){
+    get_model_properties: function(obj = {}){
         const keys = Object.keys(obj)
         const values = Object.values(obj)
         return {
@@ -58,8 +58,8 @@ const utils = {
             values,
         }
     },
-    get_clean_properties: function(nUser = {}){
-        const properties = this.get_properties(nUser)
+    get_key_value: function(nUser = {}){
+        const properties = this.get_model_properties(nUser)
         const k = properties['keys']
         const v = properties['values']
         //console.log(k)
@@ -73,9 +73,9 @@ const utils = {
         //console.log(trim)
         return trim
     },
-    get_find_properties: function(obj = {}){
+    get_asign_value: function(obj = {}){
         //console.log(where)
-        const data = this.get_properties(obj)
+        const data = this.get_model_properties(obj)
         const keys = data['keys']
         const values = data['values']
         let tratado = []
