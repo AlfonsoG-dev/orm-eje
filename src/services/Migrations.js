@@ -79,8 +79,8 @@ class Migrations{
         return trim
     }
     async rename_columns(model){
-        const db_properties = await utils.get_column_name(this.db_name, this.tb_name, this.cursor)
-        const {keys, values} = utils.get_properties(model)
+        const db_properties = await utils.get_table_column(this.db_name, this.tb_name, this.cursor)
+        const {keys, values} = utils.get_model_properties(model)
         let old_column;
         let rename_queries = [];
         for(let p in db_properties){

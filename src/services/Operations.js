@@ -33,7 +33,7 @@ class Operaciones {
         }
     }
     async create_table(){
-        const trim = utils.get_clean_properties(this.model)
+        const trim = utils.get_key_value(this.model)
         const data = await this.cursor.execute(`create table if not exists ${this.tb_name}(${trim})`)
         if(data !== undefined){
             return data
@@ -111,7 +111,7 @@ class Operaciones {
             throw Error("debe asignar un objeto con la propiedad ¡{where: {condicion}}!")
         }
         if(options === undefined || options.length === 0){
-            const properties = utils.get_find_properties(where)
+            const properties = utils.get_asign_value(where)
             const p_clean = utils.get_condicional(properties)
             return new Promise((resolve, reject) =>{
                 this.any_execute(`select * from ${this.tb_name} where${p_clean}`)
@@ -120,7 +120,7 @@ class Operaciones {
             })
         }
         if(options !== undefined || options.length > 0){
-            const properties = utils.get_find_properties(where)
+            const properties = utils.get_asign_value(where)
             const p_clean = utils.get_condicional(properties)
             let queries = []
             for(let p of options){
@@ -140,7 +140,7 @@ class Operaciones {
         if(obj === undefined){
             throw Error("no se ha asignado ningun objeto para guardar")
         }
-        const {keys, values} = utils.get_properties(obj)
+        const {keys, values} = utils.get_model_properties(obj)
         const date_format = utils.get_date_format()
         const t_va = []
         for(let i of values){
@@ -160,7 +160,7 @@ class Operaciones {
         if(obj === undefined){
             throw Error("no se ha asignado ningun objeto para actualizar")
         }
-        const combin = utils.get_find_properties(obj).split(',')
+        const combin = utils.get_asign_value(obj).split(',')
         const valor = combin.splice(1, combin.length)
         const date_now = utils.get_date_format()
         return new Promise((resolve, reject) => {
@@ -173,7 +173,7 @@ class Operaciones {
         if(where === undefined){
             throw Error("no se ha asignado un objeto para eliminar")
         }
-        const del = utils.get_find_properties(where)
+        const del = utils.get_asign_value(where)
         const valores = utils.get_condicional(del).toString()
         return new Promise((resolve, reject) => {
             this.any_execute(`delete from ${this.tb_name} where${valores}`)
