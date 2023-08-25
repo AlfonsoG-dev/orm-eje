@@ -25,11 +25,11 @@ class Migrations{
         let queries = []
         for(let f of faltante){
             if(model[f.split(" ")[0]] !== undefined){
-                queries.push(` add column ${f}`)
+                queries.push(` add column ${f},`)
             }
         }
         const texto = queries.join("")
-        const trim = texto.substring(0, texto.length)
+        const trim = texto.substring(0, texto.length-1)
         return trim
     }
     async add_pk_or_fk(isPK = [], isFK = [], column_ref){
