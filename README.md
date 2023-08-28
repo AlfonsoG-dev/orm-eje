@@ -129,6 +129,7 @@ op.make_migrations()
 >>- crear tabla en base al modelo
 >>- agregar columnas
 >>- renombrar columnas
+>>- modificar tipo y reglas de las columnas
 >>- eliminar columnas 
 >- todo lo anterior se realiza de manera automática 
 >- solo debes hacer modificaciones al modelo
