@@ -153,12 +153,12 @@ class Migrations{
             }
             return migration
         }
+        if(fd_columns !== undefined && fd_columns !== ''){
+            const migration = Promise.all([this.alter_table(fd_columns)])
+            return migration
+        }
         if(d_columns !== undefined && d_columns !== ''){
-            let migration = Promise.all([this.alter_table(d_columns)])
-            if(fd_columns !== undefined && fd_columns !== ''){
-                migration = Promise.all([this.alter_table(fd_columns)])
-                return migration
-            }
+            const migration = Promise.all([this.alter_table(d_columns)])
             return migration
         }
         if(rn_columns !== ''){
