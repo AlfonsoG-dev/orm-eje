@@ -133,9 +133,6 @@ op.make_migrations()
 >>- eliminar columnas 
 >- todo lo anterior se realiza de manera automática 
 >- solo debes hacer modificaciones al modelo
-
----
-
 >- solo el llamar esté método permite migrar las modificaciones del modelo de manera automática 
 
 ```js
