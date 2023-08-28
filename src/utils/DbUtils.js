@@ -152,21 +152,36 @@ const utils = {
         const {keys, values} = this.get_model_properties(obj);
         let model_column_types = []
         for(let mp of values){
-            model_column_types.push(mp.split(' ')[0])
+            model_column_types.push(mp.split(' ').join(" "))
         }
         return model_column_types
     },
     get_table_column_type: async function(db_name, tb_name, cursor){
         const tb_properties = await this.get_table_properties(db_name, tb_name, cursor);
         let colums = []
-        for(let tc of tb_properties){
-            let query = '';
-            for(let op in tc){
+        for(let tp of tb_properties){
+            let querie = '';
+            for(let op in tp){
                 if(op === 'Type'){
-                    query = tc[op]
+                    querie = tp[op]
+                }
+                if(op === 'Null' && tp[op] === 'NO'){
+                    querie += ' not null'
+                }
+                if(op === 'Key'){
+                    if(tp[op] === 'PRI'){
+                        querie += ' unique primary key'
+                    }
+                    if(tp[op] === 'UNI'){
+                        querie += ' unique'
+                    }
+
+                }
+                if(op === 'Extra'){
+                    querie += ` ${tp[op]}`
                 }
             }
-            colums.push(query)
+            colums.push(querie.trimEnd())
         }
         return colums
     }
