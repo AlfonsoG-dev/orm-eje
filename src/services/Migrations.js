@@ -154,7 +154,11 @@ class Migrations{
             return migration
         }
         if(d_columns !== undefined && d_columns !== ''){
-            const migration = Promise.allSettled([this.alter_table(fd_columns) ,this.alter_table(d_columns)])
+            let migration = Promise.all([this.alter_table(d_columns)])
+            if(fd_columns !== undefined && fd_columns !== ''){
+                migration = Promise.all([this.alter_table(fd_columns)])
+                return migration
+            }
             return migration
         }
         if(rn_columns !== ''){
