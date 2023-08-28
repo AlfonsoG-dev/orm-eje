@@ -94,23 +94,51 @@ class Migrations{
         return trim
 
     }
+    async compare_columns_types(model){
+        const model_types = utils.get_model_column_type(model);
+        const table_types = await utils.get_table_column_type(this.db_name, this.tb_name, this.cursor);
+        const {keys} = utils.get_model_properties(model)
+        let different = [];
+        for(let mct in model_types){
+           if(table_types[mct] !== model_types[mct]){
+               different.push({
+                   column: keys[mct],
+                   type: model_types[mct]
 
-    //TODO: change column data type
+               })
+           }
+        }
+        return different
+    }
     async change_columns_type(model){
-        throw Error("not implemented yet")
+        /*
+         * ALTER TABLE `consulta`.`users` 
+            CHANGE COLUMN `password` `password` VARCHAR(200) NOT NULL ,
+            CHANGE COLUMN `rol` `rol` VARCHAR(100) NULL DEFAULT NULL ;
+        */
+        const different = await this.compare_columns_types(model)
+        let querie = []
+        for(let dp of different){
+            querie.push(` change column ${dp['column']} ${dp['column']} ${dp['type']},`)
+        }
+        const texto = querie.join("")
+        const trim = texto.substring(0, texto.length-1)
+        return trim
     }
     async make_migration(model, ref_model, ref_tb_name){
         const new_columns = await this.add_columns(model)
         const d_columns = await this.drop_columns(model)
         const fd_columns = await this.drop_fk(model)
         const rn_columns = await this.rename_columns(model)
+        const rn_column_type = await this.change_columns_type(model)
         console.log({
             new_columns,
             d_columns,
             fd_columns,
-            rn_columns
+            rn_columns,
+            rn_column_type
         })
-        if(new_columns !== undefined && d_columns === undefined){
+        if(new_columns !== undefined && new_columns !== ''){
             const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
             let migration = Promise.all([this.alter_table(new_columns)])
             if(ref_model !== undefined && ref_tb_name !== undefined){
@@ -125,12 +153,16 @@ class Migrations{
             }
             return migration
         }
-        if(d_columns !== undefined && new_columns === ''){
+        if(d_columns !== undefined && d_columns !== ''){
             const migration = Promise.allSettled([this.alter_table(fd_columns) ,this.alter_table(d_columns)])
             return migration
         }
-        if(new_columns === undefined && d_columns === undefined && fd_columns === undefined && rn_columns !== ''){
+        if(rn_columns !== ''){
             const migration = await this.alter_table(rn_columns)
+            return migration
+        }
+        if(rn_column_type !== ''){
+            const migration = await this.alter_table(rn_column_type)
             return migration
         }
     }
