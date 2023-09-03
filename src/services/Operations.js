@@ -182,6 +182,9 @@ class Operaciones {
         })
         
     }
+    innerJoin() {
+        throw new Error("not implemented yet")
+    }
     async make_migrations(ref_model, ref_tb_name){
         try{
             /*
