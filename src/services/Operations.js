@@ -182,7 +182,20 @@ class Operaciones {
         })
         
     }
-    innerJoin() {
+    /**
+     * local_options: ["email, password"]
+     * ref_options: ["user_id, nombre"]
+     */
+    innerJoin(options = {local_op: [], ref_op: []}, ref_model) {
+        if( ref_model === undefined ||
+            options.local_op.length === 0 ||
+            options.ref_op === 0) {
+            throw Error("deberia ser diferente a undefined");
+        }
+        /**
+         * select ref_options, local_options from tb_name \
+         * innerjoin ref_tb_name on ref_model_fk = this.model.pk
+         */
         throw new Error("not implemented yet")
     }
     async make_migrations(ref_model, ref_tb_name){
