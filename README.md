@@ -105,6 +105,17 @@ op.delete({
     id: 2
 }).then((res) => console.log(res))
 .catch((err) => {throw err})
+
+//innerJoin
+class Cuentas {
+    cuenta_id_pk = 'int not null unique'
+    nombre = ''
+    email = ''
+    user_id_fk = ''
+}
+op.innerJoin({local_op: ["id_pk", "nombre"], ref_op: ["nombre, email"]}, new Cuentas(), 'cuentas', 'consulta')
+.then((res) => console.log(res))
+.catch((err) => {throw Error(err)})
 ```
 
 ## Uso para las migraciones
