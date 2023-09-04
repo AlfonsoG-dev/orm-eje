@@ -16,7 +16,17 @@ op.find({options: ["nombre", "email"], where: {id_pk: 2}})
 .then((res) => console.log(res))
 .catch((err) => {throw err})*/
 
+class Cuentas {
+    cuenta_id_pk = 'int not null unique'
+    nombre = ''
+    email = ''
+    user_id_fk = ''
+}
+op.innerJoin({local_op: ["id_pk", "nombre"], ref_op: ["nombre, email"]}, new Cuentas(), 'cuentas', 'consulta')
+.then((res) => console.log(res))
+.catch((err) => {throw Error(err)})
 
-op.make_migrations()
-.then((res) => {return res})
+
+/*op.make_migrations()
+.then((res) => {return res})*/
 
