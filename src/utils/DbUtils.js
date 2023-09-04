@@ -156,6 +156,43 @@ const utils = {
         }
         return model_column_types
     },
+    clean_properties: function(options, tb_name, ref_tb_name){
+        let clean_lp = options.local_op.join(", ").split(",") 
+        let s_lp = "";
+        for(let lp of clean_lp) {
+            s_lp += tb_name + "." + lp.trimStart() + ", "
+
+        }
+        let clean_rp = options.ref_op.join(", ").split(",")
+        let s_rp ="";
+        for(let rp of clean_rp) {
+            s_rp += ref_tb_name + "." + rp.trimStart() + ", "
+        }
+        return {s_lp, s_rp}
+    },
+    get_pk_fk: function(local_model, ref_model){
+        if(local_model === undefined || ref_model === undefined){
+            return undefined
+        }
+        const fk_keys = Object.keys(ref_model)
+        let fk = [];
+        for(let p of fk_keys){
+            const b = p.match('fk')
+            if(b !== null){
+                fk.push(b['input'])
+            }
+        }
+
+        const pk_keys = Object.keys(local_model)
+        let pk = [];
+        for(let p of pk_keys){
+            const b = p.match('pk')
+            if(b !== null){
+                pk.push(b['input'])
+            }
+        }
+        return {pk, fk}
+    },
     get_table_column_type: async function(db_name, tb_name, cursor){
         const tb_properties = await this.get_table_properties(db_name, tb_name, cursor);
         let colums = []

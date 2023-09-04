@@ -192,26 +192,14 @@ class Operaciones {
             options.ref_op === 0) {
             throw Error("deberia ser diferente a undefined");
         }
-        /**
-         * select ref_options, local_options from tb_name \
-         * innerjoin ref_tb_name on ref_model_fk = this.model.pk
-         */
-        const {keys: ref_properties} = utils.get_model_properties(ref_model);
-        const {keys: local_properties} = utils.get_model_properties(this.model);
-        let clean_lp = options.local_op.join(", ").split(",") 
-        let s_lp = "";
-        for(let lp of clean_lp) {
-            s_lp += this.tb_name + "." + lp.trimStart() + ", "
-
+        if(ref_tb_name === "" || ref_db === "") {
+            throw Error("deberia declara los nombres de referencia");
         }
-        let clean_rp = options.ref_op.join(", ").split(",")
-        let s_rp ="";
-        for(let rp of clean_rp) {
-            s_rp += ref_tb_name + "." + rp.trimStart() + ", "
-        }
+        const {pk, fk} = utils.get_pk_fk(this.model, ref_model);
+        const {s_lp, s_rp} = utils.clean_properties(options, this.tb_name, ref_tb_name)
         const c_lp = s_lp.substring(0, s_lp.length-2)
         const c_rp = s_rp.substring(0, s_rp.length-2)
-        const sql = `select ${c_lp}, ${c_rp} from ${this.tb_name} inner join ${ref_db}.${ref_tb_name} on ${ref_tb_name}.user_id_fk=${this.tb_name}.id_pk`
+        const sql = `select ${c_lp}, ${c_rp} from ${this.tb_name} inner join ${ref_db}.${ref_tb_name} on ${ref_tb_name}.${fk}=${this.tb_name}.${pk}`
         return new Promise(( resolve, reject) => {
           this.any_execute(sql)  
             .then((res) => resolve(res))
