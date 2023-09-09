@@ -108,7 +108,7 @@ const utils = {
         for(let k of ks){
             const b = k.match('pk')
             if(b !== null){
-                primary_key.push(` add constrain ${b['input']} primary key (${b['input']})`)
+                primary_key.push(` add constraint ${b['input']} primary key (${b['input']})`)
             }
         }
         return primary_key
