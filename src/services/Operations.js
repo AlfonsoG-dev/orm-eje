@@ -4,10 +4,9 @@ const migrations = require('../services/Migrations')
 //operaciones
 class Operaciones {
     constructor(db_name, tb_name, connection, model) {
-        if(tb_name === undefined || connection === undefined || db_name === undefined){
+        if(tb_name === undefined || connection === undefined || db_name === undefined) {
             throw Error("no se puede crear las operaciones")
         }
-
         this.model = model
         this.tb_name = tb_name
         this.db_name = db_name
@@ -16,7 +15,7 @@ class Operaciones {
         this.select_db()
         this.create_table()
         this.migrate = new migrations(this.db_name, this.tb_name, this.cursor);
-        this.this.utils = new this.utils();
+        this.utils = new Utils();
     }
     test_db() {
         const data = this.cursor.connect()
@@ -198,7 +197,7 @@ class Operaciones {
             throw Error("deberia declara los nombres de referencia");
         }
         const {pk, fk} = this.utils.get_pk_fk(this.model, ref_model);
-        const {s_lp, s_rp} = this.utils.clean_properties(options, this.tb_name, ref_tb_name)
+        const {s_lp, s_rp} = this.utils.asign_table_name(options, this.tb_name, ref_tb_name)
         const c_lp = s_lp.substring(0, s_lp.length-2)
         const c_rp = s_rp.substring(0, s_rp.length-2)
         const sql = `select ${c_lp}, ${c_rp} from ${this.tb_name} inner join ${ref_db}.${ref_tb_name} on ${ref_tb_name}.${fk}=${this.tb_name}.${pk}`

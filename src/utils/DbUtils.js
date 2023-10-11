@@ -22,7 +22,7 @@ class Utils {
     }
     async get_table_column_type(db_name, tb_name, cursor) {
         const tb_properties = await this.get_table_properties(db_name, tb_name, cursor);
-        let colums = []
+        let types = []
         for(let tp of tb_properties) {
             let querie = '';
             for(let op in tp){
@@ -45,9 +45,9 @@ class Utils {
                     querie += ` ${tp[op]}`
                 }
             }
-            colums.push(querie.trimEnd())
+            types.push(querie.trimEnd())
         }
-        return colums
+        return types
     }
     get_model_properties(obj = {}) {
         const keys = Object.keys(obj)
@@ -58,7 +58,7 @@ class Utils {
         }
     }
     get_model_column_type(obj) {
-        const {keys, values} = this.get_model_properties(obj);
+        const {values} = this.get_model_properties(obj);
         let model_column_types = []
         for(let mp of values) {
             model_column_types.push(mp.split(' ').join(" "))
@@ -69,7 +69,7 @@ class Utils {
      * retorna la propiedad adicional del modelo
      */
     async compare_properties(m_model, db_name, tb_name, cursor) {
-        if(m_model === undefined || db_name === undefined || tb_name === undefined || cursor === undefined){
+        if(m_model === undefined || db_name === undefined || tb_name === undefined || cursor === undefined) {
             throw Error("falta pasar argumentos")
         }
         const db_properties = await this.get_table_column(db_name, tb_name, cursor)
@@ -181,7 +181,7 @@ class Utils {
         }
         return fk
     }
-    clean_properties(options, tb_name, ref_tb_name) {
+    get_asign_table_name(options, tb_name, ref_tb_name) {
         let clean_lp = options.local_op.join(", ").split(",") 
         let s_lp = "";
         for(let lp of clean_lp) {
