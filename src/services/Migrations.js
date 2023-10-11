@@ -1,10 +1,11 @@
-const utils = require('../utils/DbUtils')
+const Utils = require('../this.utils/Dbthis.utils')
 class Migrations{
 
     constructor(db_name, tb_name, conection){
         this.db_name = db_name
         this.tb_name = tb_name
         this.cursor = conection
+        this.this.utils = new this.utils(); 
     }
     alter_table(columns){
         if(columns === undefined){
@@ -18,7 +19,7 @@ class Migrations{
         })
     }
     async add_columns(model){
-        const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
+        const faltante = await this.utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
             return undefined
         }
@@ -45,7 +46,7 @@ class Migrations{
         }
     }
     async drop_columns(model){
-        const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
+        const faltante = await this.utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
             return undefined
         }
@@ -62,7 +63,7 @@ class Migrations{
         return trim
     }
     async drop_fk(model){
-        const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
+        const faltante = await this.utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
         if(faltante === undefined){
             return undefined
         }
@@ -79,8 +80,8 @@ class Migrations{
         return trim
     }
     async rename_columns(model){
-        const db_properties = await utils.get_table_column(this.db_name, this.tb_name, this.cursor)
-        const {keys, values} = utils.get_model_properties(model)
+        const db_properties = await this.utils.get_table_column(this.db_name, this.tb_name, this.cursor)
+        const {keys, values} = this.utils.get_model_properties(model)
         let old_column;
         let rename_queries = [];
         for(let p in db_properties){
@@ -95,9 +96,9 @@ class Migrations{
 
     }
     async compare_columns_types(model){
-        const model_types = utils.get_model_column_type(model);
-        const table_types = await utils.get_table_column_type(this.db_name, this.tb_name, this.cursor);
-        const {keys} = utils.get_model_properties(model)
+        const model_types = this.utils.get_model_column_type(model);
+        const table_types = await this.utils.get_table_column_type(this.db_name, this.tb_name, this.cursor);
+        const {keys} = this.utils.get_model_properties(model)
         let different = [];
         for(let mct in model_types){
            if(table_types[mct] !== model_types[mct]){
@@ -139,12 +140,12 @@ class Migrations{
             rn_column_type
         })
         if(new_columns !== undefined && new_columns !== ''){
-            const faltante = await utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
+            const faltante = await this.utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
             let migration = Promise.all([this.alter_table(new_columns)])
             if(ref_model !== undefined && ref_tb_name !== undefined){
-                const fk = utils.get_foreign_key(ref_model);
-                const isPK = utils.add_primary_key(faltante)
-                const isFK = utils.add_foreign_key(faltante, ref_tb_name, fk)
+                const fk = this.utils.get_foreign_key(ref_model);
+                const isPK = this.utils.add_primary_key(faltante)
+                const isFK = this.utils.add_foreign_key(faltante, ref_tb_name, fk)
                 const pk_fk_columns = await this.add_pk_or_fk(isPK, isFK, fk)
                 migration = Promise.all([this.alter_table(pk_fk_columns)])
                 console.log({
