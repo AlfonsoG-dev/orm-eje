@@ -208,13 +208,13 @@ class Operaciones {
             .catch((err) => reject(err))
         })
     }
-    async make_migrations(ref_model, ref_tb_name){
-        try{
+    async make_migrations(ref_model, ref_tb_name) {
+        try {
             if(ref_model !== undefined && ref_tb_name !== undefined){
                 await this.migrate.make_migration(this.model, ref_model, ref_tb_name)
             }
             await this.migrate.make_migration(this.model)
-        }catch(err) {
+        } catch(err) {
             throw Error(err)
         }
     }
