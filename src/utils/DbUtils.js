@@ -1,6 +1,8 @@
+const {Connection} = require("mysql2/typings/mysql/lib/Connection")
+
 class Utils {
-    get_table_properties(db_name, tb_name, cursor) {
-        if(db_name === undefined || tb_name === undefined) {
+    get_table_properties(db_name = "", tb_name = "", cursor) {
+        if(db_name === "" || tb_name === "") {
             throw Error("es necesario el nombre de la tabla y base de datos")
         }
         return new Promise((resolve, reject) => {
@@ -10,13 +12,58 @@ class Utils {
             })
         })
     }
-    async get_table_column(db_name, tb_name, cursor) {
+    async get_table_column(db_name = "", tb_name = "", cursor = Connection) {
         const data = await this.get_table_properties(db_name, tb_name, cursor)
         const c_name = []
         for(let f of data) {
             c_name.push(f['Field'])
         }
         return c_name
+    }
+    async get_table_column_type(db_name, tb_name, cursor) {
+        const tb_properties = await this.get_table_properties(db_name, tb_name, cursor);
+        let colums = []
+        for(let tp of tb_properties) {
+            let querie = '';
+            for(let op in tp){
+                if(op === 'Type') {
+                    querie = tp[op]
+                }
+                if(op === 'Null' && tp[op] === 'NO') {
+                    querie += ' not null'
+                }
+                if(op === 'Key') {
+                    if(tp[op] === 'PRI') {
+                        querie += ' unique primary key'
+                    }
+                    if(tp[op] === 'UNI') {
+                        querie += ' unique'
+                    }
+
+                }
+                if(op === 'Extra') {
+                    querie += ` ${tp[op]}`
+                }
+            }
+            colums.push(querie.trimEnd())
+        }
+        return colums
+    }
+    get_model_properties(obj = {}) {
+        const keys = Object.keys(obj)
+        const values = Object.values(obj)
+        return {
+            keys,
+            values,
+        }
+    }
+    get_model_column_type(obj) {
+        const {keys, values} = this.get_model_properties(obj);
+        let model_column_types = []
+        for(let mp of values) {
+            model_column_types.push(mp.split(' ').join(" "))
+        }
+        return model_column_types
     }
     /*
      * retorna la propiedad adicional del modelo
@@ -48,27 +95,16 @@ class Utils {
             return faltante
         }
     }
-    get_model_properties(obj = {}) {
-        const keys = Object.keys(obj)
-        const values = Object.values(obj)
-        return {
-            keys,
-            values,
-        }
-    }
     get_key_value(nUser = {}) {
         const properties = this.get_model_properties(nUser)
         const k = properties['keys']
         const v = properties['values']
-        //console.log(k)
-        //console.log(v)
         let completas = [];
         for(let pr in k) {
             completas.push(`${k[pr]} ${v[pr]},`)
         }
         const texto = completas.join(" ")
         const trim = texto.substring(0, texto.length-1)
-        //console.log(trim)
         return trim
     }
     get_asign_value(obj = {}) {
@@ -145,14 +181,6 @@ class Utils {
         }
         return fk
     }
-    get_model_column_type(obj) {
-        const {keys, values} = this.get_model_properties(obj);
-        let model_column_types = []
-        for(let mp of values) {
-            model_column_types.push(mp.split(' ').join(" "))
-        }
-        return model_column_types
-    }
     clean_properties(options, tb_name, ref_tb_name) {
         let clean_lp = options.local_op.join(", ").split(",") 
         let s_lp = "";
@@ -189,35 +217,6 @@ class Utils {
             }
         }
         return {pk, fk}
-    }
-    async get_table_column_type(db_name, tb_name, cursor) {
-        const tb_properties = await this.get_table_properties(db_name, tb_name, cursor);
-        let colums = []
-        for(let tp of tb_properties) {
-            let querie = '';
-            for(let op in tp){
-                if(op === 'Type') {
-                    querie = tp[op]
-                }
-                if(op === 'Null' && tp[op] === 'NO') {
-                    querie += ' not null'
-                }
-                if(op === 'Key') {
-                    if(tp[op] === 'PRI') {
-                        querie += ' unique primary key'
-                    }
-                    if(tp[op] === 'UNI') {
-                        querie += ' unique'
-                    }
-
-                }
-                if(op === 'Extra') {
-                    querie += ` ${tp[op]}`
-                }
-            }
-            colums.push(querie.trimEnd())
-        }
-        return colums
     }
 }
 

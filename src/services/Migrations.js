@@ -1,31 +1,31 @@
-const Utils = require('../this.utils/Dbthis.utils')
+const Utils = require('../utils/DbUtils')
 class Migrations{
 
-    constructor(db_name, tb_name, conection){
+    constructor(db_name, tb_name, conection) {
         this.db_name = db_name
         this.tb_name = tb_name
         this.cursor = conection
-        this.this.utils = new this.utils(); 
+        this.this.utils = new Utils(); 
     }
-    alter_table(columns){
-        if(columns === undefined){
+    alter_table(columns) {
+        if(columns === undefined) {
             return undefined
         }
         return new Promise((resolve, reject) => {
-            this.cursor.execute(`alter table ${this.db_name}.${this.tb_name}${columns};`, function(err, res){
+            this.cursor.execute(`alter table ${this.db_name}.${this.tb_name}${columns};`, function(err, res) {
                 if(err) reject(err)
                 resolve(res)
             })
         })
     }
-    async add_columns(model){
+    async add_columns(model) {
         const faltante = await this.utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
-        if(faltante === undefined){
+        if(faltante === undefined) {
             return undefined
         }
         let queries = []
-        for(let f of faltante){
-            if(model[f.split(" ")[0]] !== undefined){
+        for(let f of faltante) {
+            if(model[f.split(" ")[0]] !== undefined) {
                 queries.push(` add column ${f},`)
             }
         }
@@ -33,28 +33,28 @@ class Migrations{
         const trim = texto.substring(0, texto.length-1)
         return trim
     }
-    async add_pk_or_fk(isPK = [], isFK = [], column_ref){
-        if(isPK.length > 0 && isFK.length === 0){
+    async add_pk_or_fk(isPK = [], isFK = [], column_ref) {
+        if(isPK.length > 0 && isFK.length === 0) {
             const texto = ` ${isPK},`
             const trim = texto.substring(0, texto.length-1)
             return trim
         }
-        if(isFK.length > 0 && isPK.length === 0 && column_ref !== undefined){
+        if(isFK.length > 0 && isPK.length === 0 && column_ref !== undefined) {
             const texto = ` ${isFK},`
             const trim = texto.substring(0, texto.length-1)
             return trim
         }
     }
-    async drop_columns(model){
+    async drop_columns(model) {
         const faltante = await this.utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
-        if(faltante === undefined){
+        if(faltante === undefined) {
             return undefined
         }
         let d_queries = []
-        for(let f of faltante){
-            if(model[f.split(" ")[0]] === undefined){
+        for(let f of faltante) {
+            if(model[f.split(" ")[0]] === undefined) {
                 d_queries.push(` drop column ${f.split(" ")},`)
-            }else{
+            } else {
                 return undefined
             }
         }
@@ -62,16 +62,16 @@ class Migrations{
         const trim = texto.substring(0, texto.length-1)
         return trim
     }
-    async drop_fk(model){
+    async drop_fk(model) {
         const faltante = await this.utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
-        if(faltante === undefined){
+        if(faltante === undefined) {
             return undefined
         }
         let d_queries = []
-        for(let f of faltante){
-            if(model[f.split(" ")[0]] === undefined){
+        for(let f of faltante) {
+            if(model[f.split(" ")[0]] === undefined) {
                 d_queries.push(' DROP FOREIGN KEY `'+`${f.split(" ")}`+'`;,')
-            }else{
+            }else {
                 return undefined
             }
         }
@@ -79,13 +79,13 @@ class Migrations{
         const trim = texto.substring(0, texto.length-1)
         return trim
     }
-    async rename_columns(model){
+    async rename_columns(model) {
         const db_properties = await this.utils.get_table_column(this.db_name, this.tb_name, this.cursor)
         const {keys, values} = this.utils.get_model_properties(model)
         let old_column;
         let rename_queries = [];
-        for(let p in db_properties){
-            if(model[db_properties[p]] === undefined){
+        for(let p in db_properties) {
+            if(model[db_properties[p]] === undefined) {
                 old_column = p
                 rename_queries.push(` rename column ${db_properties[p]} to ${keys[old_column]},`)
             }
@@ -95,13 +95,13 @@ class Migrations{
         return trim
 
     }
-    async compare_columns_types(model){
+    async compare_columns_types(model) {
         const model_types = this.utils.get_model_column_type(model);
         const table_types = await this.utils.get_table_column_type(this.db_name, this.tb_name, this.cursor);
         const {keys} = this.utils.get_model_properties(model)
         let different = [];
-        for(let mct in model_types){
-           if(table_types[mct] !== model_types[mct]){
+        for(let mct in model_types) {
+           if(table_types[mct] !== model_types[mct]) {
                different.push({
                    column: keys[mct],
                    type: model_types[mct]
@@ -111,22 +111,22 @@ class Migrations{
         }
         return different
     }
-    async change_columns_type(model){
-        /*
-         * ALTER TABLE `consulta`.`users` 
+    /*
+     * ALTER TABLE `consulta`.`users` 
             CHANGE COLUMN `password` `password` VARCHAR(200) NOT NULL ,
             CHANGE COLUMN `rol` `rol` VARCHAR(100) NULL DEFAULT NULL ;
-        */
+            */
+    async change_columns_type(model) {
         const different = await this.compare_columns_types(model)
         let querie = []
-        for(let dp of different){
+        for(let dp of different) {
             querie.push(` change column ${dp['column']} ${dp['column']} ${dp['type']},`)
         }
         const texto = querie.join("")
         const trim = texto.substring(0, texto.length-1)
         return trim
     }
-    async make_migration(model, ref_model, ref_tb_name){
+    async make_migration(model, ref_model, ref_tb_name) {
         const new_columns = await this.add_columns(model)
         const d_columns = await this.drop_columns(model)
         const fd_columns = await this.drop_fk(model)
@@ -139,10 +139,10 @@ class Migrations{
             rn_columns,
             rn_column_type
         })
-        if(new_columns !== undefined && new_columns !== ''){
+        if(new_columns !== undefined && new_columns !== '') {
             const faltante = await this.utils.compare_properties(model, this.db_name, this.tb_name, this.cursor)
             let migration = Promise.all([this.alter_table(new_columns)])
-            if(ref_model !== undefined && ref_tb_name !== undefined){
+            if(ref_model !== undefined && ref_tb_name !== undefined) {
                 const fk = this.utils.get_foreign_key(ref_model);
                 const isPK = this.utils.add_primary_key(faltante)
                 const isFK = this.utils.add_foreign_key(faltante, ref_tb_name, fk)
@@ -154,19 +154,19 @@ class Migrations{
             }
             return migration
         }
-        if(fd_columns !== undefined && fd_columns !== ''){
+        if(fd_columns !== undefined && fd_columns !== '') {
             const migration = Promise.all([this.alter_table(fd_columns)])
             return migration
         }
-        if(d_columns !== undefined && d_columns !== ''){
+        if(d_columns !== undefined && d_columns !== '') {
             const migration = Promise.all([this.alter_table(d_columns)])
             return migration
         }
-        if(rn_columns !== ''){
+        if(rn_columns !== '') {
             const migration = await this.alter_table(rn_columns)
             return migration
         }
-        if(rn_column_type !== ''){
+        if(rn_column_type !== '') {
             const migration = await this.alter_table(rn_column_type)
             return migration
         }
