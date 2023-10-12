@@ -76,6 +76,16 @@ op.find({
 .then((res) => console.log(res))
 .catch((err) => {throw err})
 
+//buscar entre varios valores
+op.findIn("nombre", ['alfonso', 'test', 'admin'])
+.then((res) => console.log(res))
+.catch((err) => {throw err})
+
+//buscar por patron para varias columnas
+op.findPattern("admin", ['nombre', 'rol'])
+.then((res) => console.log(res))
+.catch((err) => {throw err})
+
 //modelo del usuario 
 const u = {
     nombre: 'test',
