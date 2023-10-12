@@ -118,8 +118,8 @@ class Utils {
         }
         return tratado.toString()
     }
-    get_condicional(properties = '') {
-        return properties.replaceAll(',' , ' and')
+    get_condicional(properties = '', type = '') {
+        return properties.replaceAll(',' , type)
     }
      get_date_format() {
         const date_now = new Date(Date.now())
@@ -194,6 +194,17 @@ class Utils {
             s_rp += ref_tb_name + "." + rp.trimStart() + ", "
         }
         return {s_lp, s_rp}
+    }
+    get_like_conditional(pattern = "", columns = []) {
+        let query = []
+        for(let k of columns) {
+            query.push(`${k} like ${pattern}`);
+        }
+        let res = "";
+        for(let q of query) {
+            res += q + ", ";
+        }
+        return res.substring(0, res.length-2);
     }
     get_pk_fk(local_model, ref_model) {
         if(local_model === undefined || ref_model === undefined) {

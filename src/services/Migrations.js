@@ -5,7 +5,7 @@ class Migrations{
         this.db_name = db_name
         this.tb_name = tb_name
         this.cursor = conection
-        this.this.utils = new Utils(); 
+        this.utils = new Utils(); 
     }
     alter_table(columns) {
         if(columns === undefined) {
@@ -81,7 +81,7 @@ class Migrations{
     }
     async rename_columns(model) {
         const db_properties = await this.utils.get_table_column(this.db_name, this.tb_name, this.cursor)
-        const {keys, values} = this.utils.get_model_properties(model)
+        const {keys} = this.utils.get_model_properties(model)
         let old_column;
         let rename_queries = [];
         for(let p in db_properties) {

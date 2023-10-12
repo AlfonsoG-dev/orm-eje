@@ -114,7 +114,7 @@ class Operaciones {
         }
         if(options === undefined || options.length === 0) {
             const properties = this.utils.get_asign_value(where)
-            const p_clean = this.utils.get_condicional(properties)
+            const p_clean = this.utils.get_condicional(properties, "and")
             return new Promise((resolve, reject) => {
                 this.any_execute(`select * from ${this.tb_name} where${p_clean}`)
                 .then((res) => resolve(res))
@@ -123,7 +123,7 @@ class Operaciones {
         }
         if(options !== undefined || options.length > 0) {
             const properties = this.utils.get_asign_value(where)
-            const p_clean = this.utils.get_condicional(properties)
+            const p_clean = this.utils.get_condicional(properties, "and")
             let queries = []
             for(let p of options) {
                 queries.push(` ${p},`)
@@ -138,16 +138,38 @@ class Operaciones {
         }
     }
     /**
+     * findIn(column, options)
+     * column: "nombre"
+     * options: ['test', 'admin']
      */
-    findIn() {
-        //TODO: implementar findIn
-        throw new Error("not implemented yet")
+    findIn(column = "", options = []) {
+        if(column === "" || options.length === 0) {
+            throw Error("debe asignar los argumentos correctamente");
+        }
+        let in_options = "";
+        for(let k of options) {
+            in_options += `'${k}', `;
+        }
+        let clean_options = in_options.substring(0, in_options.length-2);
+        let sql = `select * from ${this.tb_name} where ${column} in (${clean_options})`;
+
+        return new Promise((resolve, reject) => {
+            this.any_execute(sql)
+            .then((res) => resolve(res))
+            .catch((err) => reject(err))
+        })
     }
     /**
+     * findPattern(pattern, columns)
+     * pattern: "pk"
+     * columns: ['nombre', 'email']
      */
-    findPattern() {
-        //TODO: implementar findPattern
-        throw new Error("not implemented yet")
+    findPattern(pattern = "", columns = []) {
+        if(pattern === "" || columns.length === 0) {
+            throw Error("debe asignar los argumentos correctamente");
+        }
+        const pattern_conditional = this.utils.get_like_conditional(pattern, columns);
+        let sql = `select * from ${this.tb_name} where ${pattern_conditional}`;
     }
     save(obj) {
         if(obj === undefined) {
@@ -187,7 +209,7 @@ class Operaciones {
             throw Error("no se ha asignado un objeto para eliminar")
         }
         const del = this.utils.get_asign_value(where)
-        const valores = this.utils.get_condicional(del).toString()
+        const valores = this.utils.get_condicional(del, "and")
         return new Promise((resolve, reject) => {
             this.any_execute(`delete from ${this.tb_name} where${valores}`)
             .then((res) => resolve(res))
