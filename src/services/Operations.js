@@ -137,6 +137,18 @@ class Operaciones {
             })
         }
     }
+    /**
+     */
+    findIn() {
+        //TODO: implementar findIn
+        throw new Error("not implemented yet")
+    }
+    /**
+     */
+    findPattern() {
+        //TODO: implementar findPattern
+        throw new Error("not implemented yet")
+    }
     save(obj) {
         if(obj === undefined) {
             throw Error("no se ha asignado ningun objeto para guardar")
