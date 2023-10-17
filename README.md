@@ -31,7 +31,7 @@ normal_conection: function(db_name = ''){
 ```
 
 >>- modelo para la base de datos:
->>- crear una carpeta _model_: `mkdir ./src/model` -> crear el archivo "DbModel.js": `touch DbModel.js`
+>>- crear una carpeta _model_: `md ./src/model` -> crear el archivo "DbModel.js": `ni DbModel.js`
 >>- en el archivo crear los modelos necesarios
 ```js
 class User {
