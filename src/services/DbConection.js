@@ -1,6 +1,6 @@
 const mysql = require('mysql2')
 const db_conection = {
-    normal_conection: function(db_name = ''){
+    normal_conection: function(db_name = '') {
         return mysql.createConnection({
             host: 'localhost',
             user: 'test_user',
@@ -8,7 +8,8 @@ const db_conection = {
             database: db_name
         })
     },
-    pool_conection: function(){
+    pool_conection: function() {
+        // TODO: implemt the pool connection
         throw Error("not implemented yet")
     }
 }
