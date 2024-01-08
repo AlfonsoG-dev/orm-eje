@@ -170,6 +170,12 @@ class Operaciones {
         }
         const pattern_conditional = this.utils.get_like_conditional(pattern, columns);
         let sql = `select * from ${this.tb_name} where ${pattern_conditional}`;
+
+        return new Promise((resolve, reject) => {
+            this.any_execute(sql)
+            .then((res) => resolve(res))
+            .catch((err) => reject(err))
+        })
     }
     save(obj) {
         if(obj === undefined) {
