@@ -8,9 +8,14 @@ const db_conection = {
             database: db_name
         })
     },
-    pool_conection: function() {
-        // TODO: implemt the pool connection
-        throw Error("not implemented yet")
+    pool_conection: function(db_name = '') {
+        return mysql.createPool({
+            connectionLimit: 10,
+            host: 'localhost',
+            user: 'test_user',
+            password: '5x5W12',
+            database: db_name
+        })
     }
 }
 
