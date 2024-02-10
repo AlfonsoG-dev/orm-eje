@@ -1,5 +1,3 @@
-const {Connection} = require("mysql2/typings/mysql/lib/Connection")
-
 class Utils {
     get_table_properties(db_name = "", tb_name = "", cursor) {
         if(db_name === "" || tb_name === "") {
@@ -12,7 +10,7 @@ class Utils {
             })
         })
     }
-    async get_table_column(db_name = "", tb_name = "", cursor = Connection) {
+    async get_table_column(db_name = "", tb_name = "", cursor) {
         const data = await this.get_table_properties(db_name, tb_name, cursor)
         const c_name = []
         for(let f of data) {
@@ -198,13 +196,13 @@ class Utils {
     get_like_conditional(pattern = "", columns = []) {
         let query = []
         for(let k of columns) {
-            query.push(`${k} like ${pattern}`);
+            query.push(`${k} like '${pattern}'`);
         }
         let res = "";
         for(let q of query) {
-            res += q + ", ";
+            res += q + " or ";
         }
-        return res.substring(0, res.length-2);
+        return res.substring(0, res.length-4);
     }
     get_pk_fk(local_model, ref_model) {
         if(local_model === undefined || ref_model === undefined) {
@@ -232,4 +230,3 @@ class Utils {
 }
 
 module.exports = Utils
-
