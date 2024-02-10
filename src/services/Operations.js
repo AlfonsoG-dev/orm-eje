@@ -3,7 +3,6 @@ const Utils = require('../utils/DbUtils')
 const migrations = require('../services/Migrations')
 //operaciones
 class Operaciones {
-    utils = new Utils()
     constructor(db_name, tb_name, connection, model) {
         if(tb_name === undefined || connection === undefined || db_name === undefined) {
             throw Error("no se puede crear las operaciones")
@@ -12,11 +11,12 @@ class Operaciones {
         this.tb_name = tb_name
         this.db_name = db_name
         this.cursor = connection
+        this.utils = new Utils()
+        this.migrate = new migrations(this.db_name, this.tb_name, this.cursor)
+        // verify database creation
         this.test_db()
         this.select_db()
         this.create_table()
-        this.migrate = new migrations(this.db_name, this.tb_name, this.cursor)
-        this.utils = new Utils()
     }
     test_db() {
         const data = this.cursor.connect()
