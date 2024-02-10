@@ -21,7 +21,7 @@ class User {
         this.create_at = new Date(Date.now)
         this.update_at = undefined
     }
-    initDb() {
+    initDB() {
         this.id_pk = 'int not null unique primary key auto_increment'
         this.nombre = 'varchar(100) not null unique'
         this.email = 'varchar(100) not null unique'

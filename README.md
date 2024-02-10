@@ -1,24 +1,26 @@
-# Proyecto para recrear la funcionalidad de un ORM en JS
+# My ORM
+- orm like app in javascript
+- i try to recreate an orm functionality in javascript
 
-## dependencias externas
->>- [mysql server 8.0.34](https://dev.mysql.com/downloads/mysql/)
->>- [nodeJS 18.17.0](https://nodejs.org/es)
+# External dependencies
+>- [mysql server 8.0.34](https://dev.mysql.com/downloads/mysql/)
+>- [nodeJS 20.9.0](https://nodejs.org/es)
 
-## Dependencias internas
->>- mysql2
->>- npm
+# Other dependencies 
+>- mysql2
+>- npm
 
 
-## Instalación y uso
+# Instructions
 
->>- copiar el repositorio: `git clone https://github.com/AlfonsoG-dev/orm-eje.git`
->>- ingresar a la carpeta: `cd ./orm-eje`
->>- instalar las dependencias: `npm i`
->>- ejecutar el programa: `npm start`
+>- `git clone https://github.com/AlfonsoG-dev/orm-eje.git`
+>- `cd ./orm-eje`
+>- `npm install`
+>- `npm start`
 
-### Uso
+# Usage
 
->>- conexión a base de datos: por el momento solo funciona con `mysql`
+>- for now only `mysql` is supported.
 ```js
 normal_conection: function(db_name = ''){
         return mysql.createConnection({
@@ -30,29 +32,48 @@ normal_conection: function(db_name = ''){
 
 ```
 
->>- modelo para la base de datos:
->>- crear una carpeta _model_: `md ./src/model` -> crear el archivo "DbModel.js": `ni DbModel.js`
->>- en el archivo crear los modelos necesarios
+>- create the model for the database:
+>- create a folder -> `md ./src/model`
+>- create a file with the name: "DbModel.js"
+>- initialize the database state for model usage
 ```js
 class User {
-    user_id_pk = 'int not null unique primary kay auto_increment'
-    nombre = 'varchar(100) not null'
-    email = 'varchar(100) not null unique'
+    user_id_pk
+    nombre
+    email
+    constructor() {
+
+    }
+    initDB() {
+        this.user_id_pk = 'int not null unique primary kay auto_increment'
+        this.nombre = 'varchar(100) not null'
+        this.email = 'varchar(100) not null unique'
+    }
 }
 ```
 
->>- uso de las operaciones
+## Operations
 
 ```js
-//dependencias
+// dependencies
 const operations = require('./services/Operations')
 const conn = require('./services/DbConection')
-const models = require('./model/DbModel')
+const User = require('./model/DbModel')
 
 
-//instancias
-const User = new models.User()
-const op = new operations('test_db', 'test', conn.normal_conection(), User)
+// intances
+const model = new User()
+
+// initialize the database fields
+model.initDB()
+
+// create an operation instance
+const op = new operations(
+    'db_name',
+    'tb_name',
+    conn.normal_conection(),
+    model
+)
 
 
 //contar 
@@ -128,95 +149,68 @@ op.innerJoin({local_op: ["id_pk", "nombre"], ref_op: ["nombre, email"]}, new Cue
 .catch((err) => {throw Error(err)})
 ```
 
-## Uso para las migraciones
->>- para migrar las propiedades del modelo a la base de datos es necesario llamar el método de manera manual
+## Migration usage
+- migrations are make base on the database table model
+>- you can make changes in the model and later run the migrations to update the database table fields
 ```js
 //dependencias
 const operations = require('./services/Operations')
 const conn = require('./services/DbConection')
-const models = require('./model/DbModel')
+const User = require('./model/DbModel')
 
-//instancias
-const User = new models.User()
-const op = new operations('test_db', 'test', conn.normal_conection(), User)
+// instances
+const model = new User()
+const op = new operations('db_name', 'tb_name', conn.normal_conection(), model)
 
-//realizar migración
+// make migrations
 op.make_migrations()
 .then((res) => {return res})
 ```
-## Migraciones 
->- por el momento solo soporta los siguientes métodos
->>- crear base de datos
->>- crear tabla en base al modelo
->>- agregar columnas
->>- renombrar columnas
->>- modificar tipo y reglas de las columnas
->>- eliminar columnas 
->- todo lo anterior se realiza de manera automática 
->- solo debes hacer modificaciones al modelo
->- solo el llamar esté método permite migrar las modificaciones del modelo de manera automática 
+## Migration features 
+- [x] create database
+- [x] create table base on javascript classes as models
+- [x] add, rename, delete, modify columns
+- [x] dynamic loading of migrations
 
-```js
-op.make_migrations()
-.then((res) => {return res})
-```
->- al llamar el siguiente método se crea la base de datos y la tabla en base al modelo
-```js
-const op = new operations('test_db', 'test', conn.normal_conection(), User)
-```
->>- 'test_db' : nombre de la base de datos.
->>- 'test' : nombre de la tabla
->>- 'conn.normal_conection()' : conexión a la base de datos
->>- 'User' : clase modelo para la tabla de la base de datos
+## Make relationships
 
-## Uso para relacionar con otro modelo
-
-### Llave foranea
->>- se debe crear en el modelo que lleva la llave foranea una propiedad que tenga de nombre: `nombrePropiedadfk`.
->>- si no tiene en el nombre `fk` no se puede realizar la creación de la llave foranea 
-### Llave que referencia
->>- la llave primaria del modelo al que se hace referencia debe tener: `nombrePropiedadpk`
->>- si no tienen en el nombre `pk` no se puede hacer la referencia 
+### Foreign key
+>- when you declara a *FK* use the following style: `name_id_fk`.
+### primary key
+>- when you declare a *PK* use the following style: `id_pk`
 
 
--> En los modelos se crean las siguientes propiedades para la relacionar
+>- the relations in the models looks like:
 ```js
 class Cuenta{
-    cuenta_id_pk = '' // llave de referencia
+    user_id_fk = '' // foreign key
 }
 
 class User{
-
-    cuenta_id_pk = '' // llave foranea
+    id_pk = '' // promary key
 }
 ```
 
--> en la clase pricipal se relacionan
+## Relationship usage
+
 ```js
 //modelos
-const User = new model.User()
-const Cuenta = new model.Cuenta()
+const foreignModel = new User()
+const primaryModel = new Cuenta()
 
 //operaciones
-const userOp = new operations(database, table, conexión, User)
-const cuentaOp = new opreations(database, table, conexion, Cuenta)
+const userOP = new operations(database, table, conexión, foreignModel)
+const cuentaOP = new opreations(database, table, conexion, primaryModel)
 
-userOp.make_migrations(new Cuenta(), cuentaTable)
-.then((res) => {return res})
+userOP.make_migrations(new Cuenta(), "cuenta_table_name")
+.then((res) => { return res })
+.cathc((err) => { throw err })
 ```
-
----
->>- Al teminar la migración de los datos, si se ejecuta de nuevo se lanza el siguiente error: 
-`Error: Error: no se puede migrar datos que no existen
-    at Operaciones.make_migrations (C:\JavaScript\orm-eje\src\services\Operations.js:155:19)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) `
-
->>- Ya que el modelo es el mismo que la tabla en la base de datos no es necesario ejecutar la migración
->>- Por lo tanto al terminar la migracion eliminar o comentar el llamado al método de migración
 
 ---
 
 # Disclaimer
->>- Este proyecto tiene el objetivo de replicar la funcionalidad de un ORM
->>- No se tiene en cuenta medidas de seguridad como SQL inyection entre otros
->>- Simplemente es un proyecto para aprender sobre JS y la forma en la que un ORM se comporta
+- this project is for educational purposes.
+- security issues are not taken into account.
+- its intended to replicate an ORM functionality.
+- this project is to learn about javascript and ORM behaviours

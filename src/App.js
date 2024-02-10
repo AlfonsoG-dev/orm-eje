@@ -6,7 +6,7 @@ const User = require('./model/DbModel')
 
 //instancias
 const model = new User()
-model.initDb()
+model.initDB()
 const op = new operations('consulta', 'users', conn.normal_conection(), model)
 
 /*
