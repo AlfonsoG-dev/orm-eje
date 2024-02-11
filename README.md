@@ -1,5 +1,5 @@
 # My ORM
-- orm like app in javascript
+- ORM like app in javascript
 - i try to recreate an orm functionality in javascript
 
 # External dependencies
@@ -9,6 +9,13 @@
 # Other dependencies 
 >- mysql2
 >- npm
+
+# Features
+- [x] count operation
+- [x] select using: patterns, where clause, in clause
+- [x] CRUD operations
+- [x] inner join operation
+- [x] migration operations 
 
 
 # Instructions
@@ -176,7 +183,7 @@ op.make_migrations()
 
 ### Foreign key
 >- when you declara a *FK* use the following style: `name_id_fk`.
-### primary key
+### Primary key
 >- when you declare a *PK* use the following style: `id_pk`
 
 
@@ -213,4 +220,4 @@ userOP.make_migrations(new Cuenta(), "cuenta_table_name")
 - this project is for educational purposes.
 - security issues are not taken into account.
 - its intended to replicate an ORM functionality.
-- this project is to learn about javascript and ORM behaviours
+- this project is to learn about javascript and ORM behaviors
