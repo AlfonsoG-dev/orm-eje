@@ -1,6 +1,8 @@
 //dependencias
 const Utils = require('../utils/DbUtils')
 const migrations = require('../services/Migrations')
+const min_max_structure = require('../utils/ParamTypes')
+
 //operaciones
 class Operaciones {
     constructor(db_name, tb_name, connection, model) {
@@ -139,6 +141,25 @@ class Operaciones {
         }
     }
     /**
+     * select min(column) as min_column_name from table where condition 
+     * select max(column) as max_column_name from table where condition 
+     *
+     * find_min_max("name: test, email: otro@gmail", {
+     *      min: ["nombre", "edad"]
+     *      max: ["sueldo", "create_at"]
+     * }, "and")
+     */
+    find_min_max(condition = {}, options = min_max_structure, type = "") {
+        const c_values = this.utils.get_asign_value(condition);
+        const c = this.utils.get_condicional(c_values, type)
+        const mx = this.utils.get_min_max_selection(options)
+        return new Promise((resolve, reject) => {
+            this.any_execute(`select ${mx} from ${this.tb_name} where ${c}`)
+            .then((res) => resolve(res))
+            .catch((err) => reject(err))
+        })
+    }
+    /**
      * findIn(column, options)
      * column: "nombre"
      * options: ['test', 'admin']
@@ -164,12 +185,15 @@ class Operaciones {
      * findPattern(pattern, columns)
      * pattern: "pk"
      * columns: ['nombre', 'email']
+     * type : and, or, not
+     * when not is used the type of the condition is or
+     * where not email=? or not name=?
      */
-    findPattern(pattern = "", columns = []) {
+    findPattern(pattern = "", columns = [], type = "") {
         if(pattern === "" || columns.length === 0) {
             throw Error("debe asignar los argumentos correctamente");
         }
-        const pattern_conditional = this.utils.get_like_conditional(pattern, columns);
+        const pattern_conditional = this.utils.get_like_conditional(pattern, columns, type);
         let sql = `select * from ${this.tb_name} where ${pattern_conditional}`;
 
         return new Promise((resolve, reject) => {

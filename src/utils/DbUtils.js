@@ -1,3 +1,4 @@
+const min_max_structure = require('./ParamTypes')
 class Utils {
     get_table_properties(db_name = "", tb_name = "", cursor) {
         if(db_name === "" || tb_name === "") {
@@ -193,16 +194,44 @@ class Utils {
         }
         return {s_lp, s_rp}
     }
-    get_like_conditional(pattern = "", columns = []) {
+    get_like_conditional(pattern = "", columns = [], type = "or") {
         let query = []
         for(let k of columns) {
             query.push(`${k} like '${pattern}'`);
         }
         let res = "";
         for(let q of query) {
-            res += q + " or ";
+            if(type === "not") {
+                res += type + " " + q + " or ";
+            } else {
+                res += q + " " + type + " ";
+            }
         }
-        return res.substring(0, res.length-4);
+        let c_res = ""
+        switch(type) {
+            case "and":
+                c_res = res.substring(0, res.length-5)
+            case "or":
+                c_res = res.substring(0, res.length-4)
+            case "not":
+                c_res = res.substring(0, res.length-4);
+        }
+        return c_res;
+    }
+    get_min_max_selection(options = min_max_structure) {
+        const {min, max} = options
+        let selection = ""
+        if(min.length > 0) {
+            for(let m of min) {
+                selection += `min(${m}) as min_${m}, `
+            }
+        } 
+        if(max.length > 0) {
+            for(let m of max) {
+                selection += `max(${m}) as max_${m}, `
+            }
+        }
+        return selection.substring(0, selection.length-2)
     }
     get_pk_fk(local_model, ref_model) {
         if(local_model === undefined || ref_model === undefined) {

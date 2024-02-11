@@ -114,6 +114,18 @@ op.findPattern("admin", ['nombre', 'rol'])
 .then((res) => console.log(res))
 .catch((err) => {throw err})
 
+// busca valor max and min
+const condition = {
+    nombre: "alfonso"
+}
+const options = {
+    min: ["password"],
+    max: ["create_at"]
+}
+op.find_min_max(condition, options, "and")
+.then((res) => console.log(res))
+.catch((err) => { throw err })
+
 //modelo del usuario 
 const u = {
     nombre: 'test',

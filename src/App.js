@@ -9,6 +9,7 @@ const model = new User()
 model.initDB()
 const op = new operations('consulta', 'users', conn.normal_conection(), model)
 
+
 /*
 op.make_migrations()
 .then((res) => {return res})
