@@ -4,10 +4,16 @@ const conn = require('./services/DbConection')
 const User = require('./model/DbModel')
 
 
-//instancias
+// model instance
 const model = new User()
 model.initDB()
-const op = new operations('consulta', 'users', conn.normal_conection(), model)
+
+// instance of database connection
+const cursor = conn.normal_conection()
+
+// database and table operations
+const op = new operations('consulta', 'users', cursor, model)
+
 
 
 /*
