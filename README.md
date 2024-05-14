@@ -27,16 +27,28 @@
 
 # Usage
 
->- for now only `mysql` is supported.
+>- create in the `utils` directory a file name: *DbConfig* with the following class
 ```js
-normal_conection: function(db_name = ''){
-        return mysql.createConnection({
-            host: 'localhost',
-            user: 'test_user',
-            password: '5x5W12',
+class DbConfig {
+    normal_config(db_name = "") {
+        return  {
+            host: "my_ip_host",
+            user: "database_user",
+            password: "user_password",
             database: db_name
-        })
+        }
+    }
+    pool_config(db_name = "") {
+        return {
+            connectionLimit: limit of concurrent connections,
+            host: 'my_ip_host',
+            user: 'database_user',
+            password: 'user_password',
+            database: db_name
+        }
+    }
 
+}
 ```
 
 >- create the model for the database:
