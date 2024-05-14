@@ -1,5 +1,5 @@
 //dependencias
-const operations = require('./services/Operations')
+const Operaciones = require('./services/Operations')
 const conn = require('./services/DbConection')
 const User = require('./model/DbModel')
 
@@ -12,9 +12,7 @@ model.initDB()
 const cursor = conn.normal_conection()
 
 // database and table operations
-const op = new operations('consulta', 'users', cursor, model)
-
-
+const op = new Operaciones('consulta', 'users', cursor, model)
 
 /*
 op.make_migrations()
