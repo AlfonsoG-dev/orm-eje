@@ -1,10 +1,10 @@
 //dependencias
-import Utils from '../utils/DbUtils'
-import Migrations from '../services/Migrations'
-import min_max_structure from '../utils/ParamTypes'
+import Utils from '../utils/DbUtils.js'
+import Migrations from '../services/Migrations.js'
+import min_max_structure from '../utils/ParamTypes.js'
 
 //operaciones
-export class Operaciones {
+export default class Operaciones {
     constructor(db_name, tb_name, connection, model) {
         if(tb_name === undefined || connection === undefined || db_name === undefined) {
             throw Error("no se puede crear las operaciones")
@@ -16,21 +16,21 @@ export class Operaciones {
         this.utils = new Utils()
         this.migrate = new Migrations(this.db_name, this.tb_name, this.cursor)
         // verify database creation
-        this.test_db()
-        this.select_db()
-        this.create_table()
+        //this.test_db()
+        //this.select_db()
+        //this.create_table()
     }
-    test_db() {
+    async test_db() {
         const data = this.cursor.connect()
         if(data !== undefined) {
             return data
         }else {
-            const data = this.cursor.execute(`create database if not exists ${this.db_name}`)
+            const data = await this.cursor.execute(`create database if not exists ${this.db_name}`)
             return data
         }
     }
-    select_db() {
-        const data = this.cursor.query(`use ${this.db_name}`)
+    async select_db() {
+        const data = await this.cursor.query(`use ${this.db_name}`)
         if(data !== undefined) {
             return data
         }

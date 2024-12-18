@@ -1,4 +1,4 @@
-import min_max_structure from './ParamTypes'
+import min_max_structure from './ParamTypes.js'
 export default class Utils {
     get_table_properties(db_name = "", tb_name = "", cursor) {
         if(db_name === "" || tb_name === "") {

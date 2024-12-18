@@ -1,8 +1,8 @@
 //dependencias
-import Operaciones from './services/Operations'
+import Operaciones from './services/Operations.js'
 import User from "./model/DbModel.js"
 import DbConfig from "./utils/DbConfig.js"
-import DbConection from "./services/DbConection"
+import DbConection from "./services/DbConection.js"
 
 
 // model instance
@@ -15,8 +15,7 @@ const cursor = new DbConection(config).normal_conection()
 
 // database and table operations
 const op = new Operaciones('consulta', 'users', cursor, model)
-/*
-op.make_migrations()
-    .then((res) => {console.log(res)})
-    .catch((err) => {throw Error(err)})
-*/
+
+//op.save(new User("testing2", "testing2@gmail.com", "123asd", "tester"))
+//    .then((res) => console.log(res))
+//    .catch((err) => console.error(err))

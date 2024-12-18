@@ -1,4 +1,4 @@
-import Utils from '../utils/DbUtils'
+import Utils from '../utils/DbUtils.js'
 export default class Migrations{
 
     constructor(db_name, tb_name, conection) {

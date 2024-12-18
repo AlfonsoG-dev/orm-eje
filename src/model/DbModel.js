@@ -4,22 +4,12 @@
  * la foreign key debe tener el identificador fk => mio_fk
  */
 export default class User {
-    id_pk
-    nombre
-    email
-    password
-    rol
-    create_at
-    update_at
-    constructor(id_pk = 0, nombre = "", email = "", password = "", rol = "") {
-        this.id_pk = id_pk
+    constructor(nombre = "", email = "", password = "", rol = "") {
         this.nombre = nombre
         this.email = email
         //apellido = apellido
         this.password = password
         this.rol = rol
-        this.create_at = new Date(Date.now)
-        this.update_at = undefined
     }
     initDB() {
         this.id_pk = 'int not null unique primary key auto_increment'
