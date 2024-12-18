@@ -33,22 +33,25 @@
 
 >- create in the `utils` directory a file name: *DbConfig* with the following class
 ```js
-class DbConfig {
-    normal_config(db_name = "") {
+export default class DbConfig {
+    constructor(db_name="") {
+        this.db_name = db_name
+    }
+    normal_config() {
         return  {
-            host: "my_ip_host",
-            user: "database_user",
-            password: "user_password",
-            database: db_name
+            host: "",
+            user: "",
+            password: "",
+            database: this.db_name
         }
     }
-    pool_config(db_name = "") {
+    pool_config() {
         return {
-            connectionLimit: limit of concurrent connections,
+            connectionLimit: 2,
             host: 'my_ip_host',
             user: 'database_user',
             password: 'user_password',
-            database: db_name
+            database: this.db_name
         }
     }
 
@@ -60,7 +63,7 @@ class DbConfig {
 >- create a file with the name: "DbModel.js"
 >- initialize the database state for model usage
 ```js
-class User {
+export default class User {
     user_id_pk
     nombre
     email
@@ -78,26 +81,23 @@ class User {
 ## Operations
 
 ```js
-// dependencies
-const operations = require('./services/Operations')
-const conn = require('./services/DbConection')
-const User = require('./model/DbModel')
+//dependencias
+import Operaciones from './services/Operations'
+import User from "./model/DbModel.js"
+import DbConfig from "./utils/DbConfig.js"
+import DbConection from "./services/DbConection"
 
 
-// intances
+// model instance
 const model = new User()
-
-// initialize the database fields
+const config = new DbConfig("database name")
 model.initDB()
 
-// create an operation instance
-const op = new operations(
-    'db_name',
-    'tb_name',
-    conn.normal_conection(),
-    model
-)
+// instance of database connection
+const cursor = new DbConection(config).normal_conection()
 
+// database and table operations
+const op = new Operaciones('consulta', 'users', cursor, model)
 
 //contar 
 op.count_column({options: ['create_at']})
@@ -247,4 +247,4 @@ userOP.make_migrations(new Cuenta(), "cuenta_table_name")
 # Disclaimer
 - this project is for educational purposes.
 - security issues are not taken into account.
-- its intended to replicate an ORM functionality.
+- Use it at your own risk.
