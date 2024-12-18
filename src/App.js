@@ -7,11 +7,11 @@ import DbConection from "./services/DbConection"
 
 // model instance
 const model = new User()
-const config = new DbConfig()
+const config = new DbConfig("consulta")
 model.initDB()
 
 // instance of database connection
-const cursor = new DbConection(config).normal_conection('consulta')
+const cursor = new DbConection(config).normal_conection()
 
 // database and table operations
 const op = new Operaciones('consulta', 'users', cursor, model)
