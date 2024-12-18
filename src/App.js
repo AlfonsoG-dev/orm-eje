@@ -1,15 +1,17 @@
 //dependencias
-const Operaciones = require('./services/Operations')
-const conn = require('./services/DbConection')
-const User = require('./model/DbModel')
+import Operaciones from './services/Operations'
+import User from "./model/DbModel.js"
+import DbConfig from "./utils/DbConfig.js"
+import DbConection from "./services/DbConection"
 
 
 // model instance
 const model = new User()
+const config = new DbConfig()
 model.initDB()
 
 // instance of database connection
-const cursor = conn.normal_conection('consulta')
+const cursor = new DbConection(config).normal_conection('consulta')
 
 // database and table operations
 const op = new Operaciones('consulta', 'users', cursor, model)

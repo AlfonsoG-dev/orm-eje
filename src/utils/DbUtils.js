@@ -1,5 +1,5 @@
-const min_max_structure = require('./ParamTypes')
-class Utils {
+import min_max_structure from './ParamTypes'
+export default class Utils {
     get_table_properties(db_name = "", tb_name = "", cursor) {
         if(db_name === "" || tb_name === "") {
             throw Error("es necesario el nombre de la tabla y base de datos")
@@ -258,4 +258,3 @@ class Utils {
     }
 }
 
-module.exports = Utils

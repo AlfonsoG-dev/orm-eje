@@ -17,6 +17,10 @@
 - [x] inner join operation
 - [x] migration operations 
 
+# TODO
+
+- [ ] Support of prepared statements.
+
 
 # Instructions
 
@@ -244,4 +248,3 @@ userOP.make_migrations(new Cuenta(), "cuenta_table_name")
 - this project is for educational purposes.
 - security issues are not taken into account.
 - its intended to replicate an ORM functionality.
-- this project is to learn about javascript and ORM behaviors

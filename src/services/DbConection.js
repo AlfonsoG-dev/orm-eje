@@ -1,15 +1,14 @@
-const mysql = require('mysql2')
-const DbConfig = require('../utils/DbConfig')
+import {mysql2 as mysql} from "mysql2"
+import DbConfig from "../utils/DbConfig";
 
-const config = new DbConfig();
-
-const db_conection = {
-    normal_conection: function(db_name = '') {
+export default class DbConection {
+    constructor(config = new DbConfig()) {
+        this.config = config
+    }
+    normal_conection(db_name = '') {
         return mysql.createConnection(config.normal_config(db_name))
-    },
-    pool_conection: function(db_name = '') {
+    }
+    pool_conection(db_name = '') {
         return mysql.createPool(config.pool_config(db_name))
     }
 }
-
-module.exports = db_conection

@@ -3,7 +3,7 @@
  * la primary key debe tener el identificador pk => id_pk
  * la foreign key debe tener el identificador fk => mio_fk
  */
-class User {
+export default class User {
     id_pk
     nombre
     email
@@ -32,4 +32,3 @@ class User {
         this.update_at = 'datetime'
     }
 }
-module.exports = User

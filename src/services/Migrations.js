@@ -1,5 +1,5 @@
-const Utils = require('../utils/DbUtils')
-class Migrations{
+import Utils from '../utils/DbUtils'
+export default class Migrations{
 
     constructor(db_name, tb_name, conection) {
         this.db_name = db_name
@@ -173,5 +173,3 @@ class Migrations{
     }
 
 }
-
-module.exports = Migrations

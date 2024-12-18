@@ -4,4 +4,4 @@ const min_max_structure = {
 }
 Object.freeze(min_max_structure);
 
-module.exports = min_max_structure
+export default min_max_structure

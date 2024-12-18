@@ -1,7 +1,8 @@
 {
   "name": "orm-eje",
   "version": "0.0.1",
-  "description": "intento hacer una especie de orm básico",
+  "description": "An orm like application in javascript, with basic functionality",
+  "type": "module",
   "main": "App.js",
   "scripts": {
     "start": "node src/App.js",
