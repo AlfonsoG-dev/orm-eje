@@ -100,7 +100,7 @@ const cursor = new DbConection(config).normal_conection()
 const op = new Operaciones('consulta', 'users', cursor, model)
 
 //contar 
-op.count_column({options: ['create_at']})
+op.count_column(['nombre', 'rol'])
 .then((res) => console.log(res))
 .catch((err) => {throw err})
 
@@ -167,7 +167,7 @@ then((res) => console.log(res))
 .catch((err) => {throw err})
 
 //eliminar por id
-op.delete({
+op.remove({
     id: 2
 }).then((res) => console.log(res))
 .catch((err) => {throw err})

@@ -16,6 +16,6 @@ const cursor = new DbConection(config).normal_conection()
 // database and table operations
 const op = new Operaciones('consulta', 'users', cursor, model)
 
-//op.save(new User("testing2", "testing2@gmail.com", "123asd", "tester"))
+//op.save(new User("testing", "testing@gmail.com", "asdf", "worker"))
 //    .then((res) => console.log(res))
 //    .catch((err) => console.error(err))

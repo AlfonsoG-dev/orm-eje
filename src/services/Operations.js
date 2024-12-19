@@ -62,31 +62,13 @@ export default class Operaciones {
         if(options === undefined && limit === undefined) {
             throw Error("asignar los datos correspondientas para {options} y {limit}")
         }
-        if(options !== undefined && limit !== undefined) {
-            return new Promise((resolve, reject) => {
-                this.any_execute(`select ${options} from ${this.tb_name} limit ${limit}`)
+        return new Promise((resolve, reject) => {
+            this.any_execute(`select ${options} from ${this.tb_name} limit ${limit}`)
                 .then((res) => resolve(res))
                 .catch((err) => reject(err))
-            })
-        }
-        if(options === undefined) {
-            return new Promise((resolve, reject) => {
-                this.any_execute(`select * from ${this.tb_name} limit ${limit}`)
-                .then((res) => resolve(res))
-                .catch((err) => reject(err))
-            })
-
-        }
-        if(limit === undefined) {
-            return new Promise((resolve, reject) => {
-                this.any_execute(`select ${options} from ${this.tb_name}`)
-                .then((res) => resolve(res))
-                .catch((err) => reject(err))
-            })
-
-        }
+        })
     }
-    count_column({options = []}) {
+    count_column(options = []) {
         if(options.length === 0) {
             return new Promise((resolve, reject) => {
                 this.any_execute(`select count('*') as count_todo from ${this.tb_name}`)
@@ -235,7 +217,7 @@ export default class Operaciones {
             .catch((err) => reject(err))
         })
     }
-    delete(where) {
+    remove(where) {
         if(where === undefined) {
             throw Error("no se ha asignado un objeto para eliminar")
         }
