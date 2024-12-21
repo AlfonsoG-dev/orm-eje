@@ -183,6 +183,55 @@ op.innerJoin({local_op: ["id_pk", "nombre"], ref_op: ["nombre, email"]}, new Cue
 .then((res) => console.log(res))
 .catch((err) => {throw Error(err)})
 ```
+- Using prepared statements
+```js
+//dependencias
+import Operaciones from './services/Operations'
+import User from "./model/DbModel.js"
+import DbConfig from "./utils/DbConfig.js"
+import DbConection from "./services/DbConection"
+
+
+// model instance
+const model = new User()
+const config = new DbConfig("database name")
+model.initDB()
+
+// instance of database connection
+const cursor = new DbConection(config).normal_conection()
+
+// database and table operations
+const op = new Operaciones('consulta', 'users', cursor, model)
+
+// selecting all columns with pagination
+const all = op.prepared_select_all(
+    {name: "testing", rol: "worker"},
+    "and", 10, 0
+)
+console.log(all)
+
+// select by columns
+cosnt by_columns = op.prepared_select(
+    ['name', 'email', 'rol'],
+    {name: "testing", rol: "tester"}, "or"
+)
+console.log(by_columns)
+
+// insert
+const inserted = op.prepared_insert(
+    new User("testing", "testing@gmail.com", "asdf", "worker")
+)
+
+console.log(inserted)
+
+// update
+const updated = op.prepared_update(
+    {name: "testing", rol: "tester"},
+    ['name']
+)
+console.log(updated)
+
+```
 
 ## Migration usage
 - migrations are make base on the database table model

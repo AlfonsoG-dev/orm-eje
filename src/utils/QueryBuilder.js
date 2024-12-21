@@ -90,7 +90,8 @@ export default class QueryBuilder {
     /**
      * builder method for update sentences.
      * @param model the object with the request object to stract the data.
-     * @param where_values values for the where clause. 
+     * @param clause indicates what value from model should be used to create the condition.
+     * @returns the sql sentence and the values for the prepared statement
     */
     update_query(model, clause=[]) {
         const keys = Object.keys(model)
