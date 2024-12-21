@@ -204,32 +204,37 @@ const cursor = new DbConection(config).normal_conection()
 const op = new Operaciones('consulta', 'users', cursor, model)
 
 // selecting all columns with pagination
-const all = op.prepared_select_all(
+op.prepared_select_all(
     {name: "testing", rol: "worker"},
     "and", 10, 0
 )
-console.log(all)
+    .then((res) => console.log(res))
+    .catch((er) => console.error(er))
 
 // select by columns
-cosnt by_columns = op.prepared_select(
+op.prepared_select(
     ['name', 'email', 'rol'],
     {name: "testing", rol: "tester"}, "or"
 )
-console.log(by_columns)
+    .then((res) => console.log(res))
+    .catch((er) => console.error(er))
 
 // insert
-const inserted = op.prepared_insert(
+op.prepared_insert(
     new User("testing", "testing@gmail.com", "asdf", "worker")
 )
+    .then((res) => console.log(res))
+    .catch((er) => console.error(er))
 
-console.log(inserted)
 
 // update
-const updated = op.prepared_update(
+op.prepared_update(
     {name: "testing", rol: "tester"},
     ['name']
 )
-console.log(updated)
+    .then((res) => console.log(res))
+    .catch((er) => console.error(er))
+
 
 ```
 
