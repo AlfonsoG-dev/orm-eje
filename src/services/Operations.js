@@ -1,5 +1,6 @@
 //dependencias
 import Utils from '../utils/DbUtils.js'
+import QueryBuilder from '../utils/QueryBuilder.js'
 import Migrations from '../services/Migrations.js'
 import min_max_structure from '../utils/ParamTypes.js'
 
@@ -9,6 +10,7 @@ export default class Operaciones {
         if(tb_name === undefined || connection === undefined || db_name === undefined) {
             throw Error("no se puede crear las operaciones")
         }
+        this.query_builder = new QueryBuilder(tb_name)
         this.model = model
         this.tb_name = tb_name
         this.db_name = db_name
@@ -42,21 +44,57 @@ export default class Operaciones {
             return data
         }
     }
-    any_query(sql = '', ...args) {
+    any_query(sql = '', values=[]) {
         return new Promise((resolve, reject) => {
-            this.cursor.query(sql, args, function(err, res) {
-                if(err) reject(err)
-                resolve(res)
-            })
+            this.cursor.query(
+                sql,
+                values,
+                (err, res) => {
+                    if(err) reject(err)
+                    resolve(res)
+                }
+            )
         })
     }
-    any_execute(sql = '', ...args) {
+    any_execute(sql = '', values=[]) {
         return new Promise((resolve, reject) => {
-            this.cursor.execute(sql, args, function(err, res) {
-                if(err) reject(err)
-                resolve(res)
-            })
+            this.cursor.execute(
+                sql,
+                values,
+                (err, res) => {
+                    if(err) reject(err)
+                    resolve(res)
+                }
+            )
         })
+    }
+    async prepared_select(columns=[], model={}, type="") {
+        try {
+            const {sql, values} = this.query_builder.select_query(columns, model, type)
+            const result = await this.any_execute(sql, values)
+            if(result.length === 0) {
+                return {
+                    error: "Empty set"
+                }
+            }
+            return result
+        } catch(er) {
+            console.error(er)
+        }
+    }
+    async prepared_select_all(clause={}, type="", limit=0, offset=0) {
+        try {
+            const {sql, values} = this.query_builder.select_all(clause, type, limit, offset)
+            const result = await this.any_execute(sql, values)
+            if(result.length === 0) {
+                return {
+                    error: "Empty set"
+                }
+            }
+            return result
+        } catch(er) {
+            console.error(er)
+        }
     }
     read({options, limit}) {
         if(options === undefined && limit === undefined) {
@@ -200,6 +238,22 @@ export default class Operaciones {
             .catch((err) => reject(err))
         })
     }
+    async prepared_insert(model={}) {
+        try {
+            const {sql, values} = this.query_builder.insert_query(model)
+            const result = await this.any_execute(sql, values)
+            if(result.affectedRows === 0) {
+                return {
+                    error: "Something happend while trying to insert"
+                }
+            }
+            return {
+                msg: "Successfully inserted"
+            }
+        } catch(er) {
+            console.error(er)
+        }
+    }
     /*
      * el primer elemento del objeto se utiliza para actualizar el objeto
      * objeto en la posición 1 re remueve de la acutalización y se utiliza como condicional
@@ -216,6 +270,22 @@ export default class Operaciones {
             .then((res) => resolve(res))
             .catch((err) => reject(err))
         })
+    }
+    async prepared_upate(model={}, clause=[]) {
+        try {
+            const {sql, values} = this.query_builder.update_query(model, clause)
+            const result = await this.any_execute(sql, values)
+            if(result.affectedRows === 0) {
+                return {
+                    error: "Something happend while trying to update"
+                }
+            }
+            return {
+                msg: "Successfully updated"
+            }
+        } catch(er) {
+            console.error(er)
+        }
     }
     remove(where) {
         if(where === undefined) {
